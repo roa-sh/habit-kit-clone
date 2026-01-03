@@ -39,7 +39,7 @@ const CompactListSettings = ({ isOpen, onClose }) => {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop WITHOUT blur (different from detail modal) */}
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -48,13 +48,13 @@ const CompactListSettings = ({ isOpen, onClose }) => {
             className="fixed inset-0 bg-black/60 z-40"
           />
           
-          {/* Settings Panel */}
+          {/* Modal */}
           <motion.div
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 35, stiffness: 350 }}
-            className="fixed inset-x-0 bottom-0 z-50 bg-dark-card rounded-t-[32px] overflow-hidden shadow-2xl"
+            className="fixed inset-x-0 bottom-0 z-50 bg-ios-card rounded-t-[32px] overflow-hidden"
             style={{
               maxWidth: '428px',
               margin: '0 auto',
@@ -62,15 +62,15 @@ const CompactListSettings = ({ isOpen, onClose }) => {
             }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-6 border-b border-dark-border">
-              <h2 className="text-2xl font-bold text-dark-text-primary tracking-tight">
+            <div className="flex items-center justify-between px-6 py-6 border-b border-ios-border">
+              <h2 className="text-2xl font-bold text-ios-text-primary tracking-tight">
                 Display Settings
               </h2>
               <button
                 onClick={onClose}
-                className="w-11 h-11 rounded-full bg-dark-card-light hover:bg-dark-border transition-colors flex items-center justify-center active:scale-95"
+                className="w-11 h-11 rounded-full bg-ios-card-secondary hover:bg-ios-border transition-colors flex items-center justify-center active:scale-95"
               >
-                <X className="w-6 h-6 text-dark-text-primary" strokeWidth={2.5} />
+                <X className="w-6 h-6 text-ios-text-primary" strokeWidth={2.5} />
               </button>
             </div>
             
@@ -78,10 +78,10 @@ const CompactListSettings = ({ isOpen, onClose }) => {
             <div className="p-6 space-y-8 pb-10">
               {/* Days Selection */}
               <div>
-                <h3 className="text-base font-semibold text-dark-text-primary mb-2">
+                <h3 className="text-base font-semibold text-ios-text-primary mb-2">
                   Number of Days
                 </h3>
-                <p className="text-sm text-dark-text-secondary mb-4">
+                <p className="text-sm text-ios-text-secondary mb-4">
                   Configure the amount of days to display in the compact list
                 </p>
                 
@@ -93,8 +93,8 @@ const CompactListSettings = ({ isOpen, onClose }) => {
                       whileTap={{ scale: 0.92 }}
                       className={`aspect-square rounded-2xl font-bold text-lg transition-all ${
                         localCompactDays === days
-                          ? 'bg-habit-purple text-white shadow-lg'
-                          : 'bg-dark-card-light text-dark-text-primary border-2 border-dark-border hover:border-dark-border-light'
+                          ? 'bg-habit-purple text-white'
+                          : 'bg-ios-card-secondary text-ios-text-primary border-2 border-ios-border hover:border-ios-border-light'
                       }`}
                       style={localCompactDays === days ? {
                         boxShadow: '0 4px 12px rgba(168, 85, 247, 0.4)'
@@ -108,22 +108,22 @@ const CompactListSettings = ({ isOpen, onClose }) => {
               
               {/* Name Visibility Toggle */}
               <div>
-                <h3 className="text-base font-semibold text-dark-text-primary mb-2">
+                <h3 className="text-base font-semibold text-ios-text-primary mb-2">
                   Habit Names
                 </h3>
-                <p className="text-sm text-dark-text-secondary mb-4">
+                <p className="text-sm text-ios-text-secondary mb-4">
                   Configure whether the habit names will be hidden or not
                 </p>
                 
-                <div className="bg-dark-card-light rounded-2xl p-5">
+                <div className="bg-ios-card-secondary rounded-2xl p-5">
                   <div className="flex items-center justify-between">
-                    <span className="text-base font-semibold text-dark-text-primary">
+                    <span className="text-base font-semibold text-ios-text-primary">
                       Show habit names
                     </span>
                     <button
                       onClick={() => handleNamesToggle(!localShowNames)}
                       className={`relative w-14 h-8 rounded-full transition-all ${
-                        localShowNames ? 'bg-habit-purple' : 'bg-dark-border'
+                        localShowNames ? 'bg-habit-purple' : 'bg-ios-border'
                       }`}
                     >
                       <div

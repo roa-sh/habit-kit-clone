@@ -49,22 +49,22 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
       animate={{ x: 0 }}
       exit={{ x: '100%' }}
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-      className="fixed inset-0 bg-dark-bg z-50 overflow-y-auto"
+      className="fixed inset-0 bg-ios-bg z-50 overflow-y-auto"
       style={{ maxWidth: '428px', margin: '0 auto' }}
     >
       {/* Header */}
-      <div className="sticky top-0 bg-dark-bg/95 backdrop-blur-xl border-b border-dark-border z-10">
+      <div className="sticky top-0 bg-ios-bg/95 backdrop-blur-xl border-b border-ios-border z-10">
         <div className="flex items-center justify-between px-6 py-5">
           <button
             onClick={onClose}
-            className="w-11 h-11 rounded-full bg-dark-card-light flex items-center justify-center hover:bg-dark-border transition-colors active:scale-95"
+            className="w-11 h-11 rounded-full bg-ios-card-secondary flex items-center justify-center hover:bg-ios-border transition-colors active:scale-95"
           >
-            <X className="w-6 h-6 text-dark-text-primary" strokeWidth={2.5} />
+            <X className="w-6 h-6 text-ios-text-primary" strokeWidth={2.5} />
           </button>
-          <h1 className="text-2xl font-bold text-dark-text-primary tracking-tight">
+          <h1 className="text-2xl font-bold text-ios-text-primary tracking-tight">
             New Habit
           </h1>
-          <div className="w-11" /> {/* Spacer for centering */}
+          <div className="w-11" />
         </div>
       </div>
       
@@ -80,14 +80,14 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
           >
             {formData.emoji}
           </button>
-          <p className="text-sm text-dark-text-secondary mt-4 font-medium">
+          <p className="text-sm text-ios-text-secondary mt-4 font-medium">
             Tap to change icon
           </p>
         </div>
         
         {/* Name Input */}
         <div>
-          <label className="block text-sm font-semibold text-dark-text-primary mb-3">
+          <label className="block text-sm font-semibold text-ios-text-primary mb-3">
             Name
           </label>
           <input
@@ -95,14 +95,14 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
             placeholder="e.g. Morning Run"
-            className="w-full px-5 py-4 bg-dark-card border-2 border-dark-border rounded-2xl text-dark-text-primary text-base placeholder-dark-text-muted focus:outline-none focus:border-habit-purple transition-colors"
+            className="w-full px-5 py-4 bg-ios-card border-2 border-ios-border rounded-2xl text-ios-text-primary text-base placeholder-ios-text-muted focus:border-habit-purple transition-colors"
             autoFocus
           />
         </div>
         
         {/* Description Input */}
         <div>
-          <label className="block text-sm font-semibold text-dark-text-primary mb-3">
+          <label className="block text-sm font-semibold text-ios-text-primary mb-3">
             Description
           </label>
           <textarea
@@ -110,34 +110,34 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
             placeholder="Optional notes about this habit"
             rows={3}
-            className="w-full px-5 py-4 bg-dark-card border-2 border-dark-border rounded-2xl text-dark-text-primary text-base placeholder-dark-text-muted focus:outline-none focus:border-habit-purple transition-colors resize-none"
+            className="w-full px-5 py-4 bg-ios-card border-2 border-ios-border rounded-2xl text-ios-text-primary text-base placeholder-ios-text-muted focus:border-habit-purple transition-colors resize-none"
           />
         </div>
         
         {/* Color Picker */}
         <div>
-          <label className="block text-sm font-semibold text-dark-text-primary mb-3">
+          <label className="block text-sm font-semibold text-ios-text-primary mb-3">
             Color
           </label>
           <button
             type="button"
             onClick={() => setShowColorPicker(true)}
-            className="w-full px-5 py-4 bg-dark-card border-2 border-dark-border rounded-2xl flex items-center justify-between hover:border-habit-purple transition-colors active:scale-98"
+            className="w-full px-5 py-4 bg-ios-card border-2 border-ios-border rounded-2xl flex items-center justify-between hover:border-habit-purple transition-colors active:scale-98"
           >
-            <span className="text-dark-text-primary font-medium">Choose color</span>
+            <span className="text-ios-text-primary font-medium">Choose color</span>
             <div className="flex items-center gap-3">
               <div
                 className="w-8 h-8 rounded-xl shadow-lg"
                 style={{ backgroundColor: formData.color }}
               />
-              <ChevronRight className="w-5 h-5 text-dark-text-secondary" />
+              <ChevronRight className="w-5 h-5 text-ios-text-secondary" />
             </div>
           </button>
         </div>
         
         {/* Streak Goal */}
         <div>
-          <label className="block text-sm font-semibold text-dark-text-primary mb-3">
+          <label className="block text-sm font-semibold text-ios-text-primary mb-3">
             Streak Goal
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -148,8 +148,8 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
                 onClick={() => setFormData(prev => ({ ...prev, streakGoal: goal.value }))}
                 className={`px-5 py-4 rounded-2xl font-semibold transition-all active:scale-95 ${
                   formData.streakGoal === goal.value
-                    ? 'bg-habit-purple text-white shadow-lg'
-                    : 'bg-dark-card text-dark-text-primary border-2 border-dark-border hover:border-dark-border-light'
+                    ? 'bg-habit-purple text-white'
+                    : 'bg-ios-card text-ios-text-primary border-2 border-ios-border hover:border-ios-border-light'
                 }`}
                 style={formData.streakGoal === goal.value ? {
                   boxShadow: '0 4px 12px rgba(168, 85, 247, 0.4)'
@@ -165,14 +165,14 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
         <button
           type="submit"
           disabled={isSaving || !formData.name.trim()}
-          className="w-full py-5 bg-habit-purple text-white text-lg font-bold rounded-2xl hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-98 shadow-lg mt-4"
+          className="w-full py-5 bg-habit-purple text-white text-lg font-bold rounded-2xl hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-98 mt-4"
           style={{ boxShadow: '0 4px 12px rgba(168, 85, 247, 0.4)' }}
         >
           {isSaving ? 'Saving...' : 'Create Habit'}
         </button>
       </form>
       
-      {/* Emoji Picker Modal */}
+      {/* Modals */}
       {showEmojiPicker && (
         <EmojiPicker
           currentEmoji={formData.emoji}
@@ -184,7 +184,6 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
         />
       )}
       
-      {/* Color Picker Modal */}
       {showColorPicker && (
         <ColorPicker
           currentColor={formData.color}

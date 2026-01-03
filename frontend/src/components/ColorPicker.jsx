@@ -30,19 +30,19 @@ const ColorPicker = ({ currentColor, onSelect, onClose }) => {
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 35, stiffness: 350 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full bg-dark-card rounded-t-[32px] overflow-hidden shadow-2xl"
+        className="w-full bg-ios-card rounded-t-[32px] overflow-hidden"
         style={{ maxWidth: '428px', margin: '0 auto' }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-6 border-b border-dark-border">
-          <h3 className="text-2xl font-bold text-dark-text-primary tracking-tight">
+        <div className="flex items-center justify-between px-6 py-6 border-b border-ios-border">
+          <h3 className="text-2xl font-bold text-ios-text-primary tracking-tight">
             Choose Color
           </h3>
           <button
             onClick={onClose}
-            className="w-11 h-11 rounded-full bg-dark-card-light hover:bg-dark-border transition-colors flex items-center justify-center active:scale-95"
+            className="w-11 h-11 rounded-full bg-ios-card-secondary hover:bg-ios-border transition-colors flex items-center justify-center active:scale-95"
           >
-            <X className="w-6 h-6 text-dark-text-primary" strokeWidth={2.5} />
+            <X className="w-6 h-6 text-ios-text-primary" strokeWidth={2.5} />
           </button>
         </div>
         

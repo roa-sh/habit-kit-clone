@@ -5,7 +5,6 @@ import { format, parseISO, getDay } from 'date-fns'
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 const CalendarGrid = ({ days, color, onDayClick }) => {
-  // Calculate the starting position (Mon = 0, Sun = 6)
   const firstDayOffset = days.length > 0 
     ? (getDay(parseISO(days[0].date)) + 6) % 7 
     : 0
@@ -16,7 +15,7 @@ const CalendarGrid = ({ days, color, onDayClick }) => {
       <div className="grid grid-cols-7 gap-2 mb-3">
         {WEEKDAYS.map(day => (
           <div key={day} className="text-center">
-            <span className="text-[11px] font-bold text-dark-text-muted uppercase tracking-wide">
+            <span className="text-[11px] font-bold text-ios-text-muted uppercase tracking-wide">
               {day}
             </span>
           </div>
@@ -59,10 +58,10 @@ const CalendarDay = ({ date, completed, color, onClick, delay }) => {
       transition={{ delay, type: 'spring', stiffness: 400, damping: 25 }}
       onClick={onClick}
       disabled={isFuture}
-      className="aspect-square rounded-2xl flex items-center justify-center relative overflow-hidden transition-all active:scale-95 disabled:opacity-20 border-0"
+      className="aspect-square rounded-2xl flex items-center justify-center relative overflow-hidden transition-all active:scale-95 disabled:opacity-20 border-2"
       style={{
         backgroundColor: completed ? color : '#2c2c2e',
-        boxShadow: completed ? `0 0 0 2px ${color}` : isToday ? '0 0 0 2px #a855f7' : '0 0 0 2px transparent'
+        borderColor: completed ? color : (isToday ? '#a855f7' : 'transparent')
       }}
       whileTap={{ scale: isFuture ? 1 : 0.92 }}
     >
@@ -90,4 +89,3 @@ const CalendarDay = ({ date, completed, color, onClick, delay }) => {
 }
 
 export default CalendarGrid
-
