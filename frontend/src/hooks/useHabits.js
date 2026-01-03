@@ -51,7 +51,15 @@ export const useHabits = () => {
   })
   
   const [toggleCompletionMutation, { loading: toggling }] = useMutation(
-    TOGGLE_HABIT_COMPLETION
+    TOGGLE_HABIT_COMPLETION,
+    {
+      update(cache, { data: { toggleHabitCompletion } }) {
+        if (toggleHabitCompletion.habit && toggleHabitCompletion.errors.length === 0) {
+          // Apollo will automatically update the cache with the returned habit data
+          // No need to manually write to cache - the mutation returns the updated habit
+        }
+      }
+    }
   )
   
   const [updateCompletionMutation, { loading: updatingCompletion }] = useMutation(
@@ -165,9 +173,9 @@ export const useHabits = () => {
   
   return {
     habits: data?.habits || [],
+    initialLoading: loading && !data, // Only true on first load
     loading: loading || creating || updating || deleting || toggling || updatingCompletion,
     error,
-    refetch,
     createHabit,
     updateHabit,
     deleteHabit,

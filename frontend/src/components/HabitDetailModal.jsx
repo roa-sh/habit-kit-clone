@@ -1,44 +1,38 @@
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { X, ChevronLeft, ChevronRight } from 'lucide-react'
-import { useCalendar } from '../hooks/useCalendar'
-import { useQuery } from '@apollo/client'
-import { GET_HABIT_MONTH_DATA } from '../graphql/queries'
-import CalendarGrid from './CalendarGrid'
+import React, { useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useCalendar } from "../hooks/useCalendar";
+import { useQuery } from "@apollo/client";
+import { GET_HABIT_MONTH_DATA } from "../graphql/queries";
+import CalendarGrid from "./CalendarGrid";
 
 const HabitDetailModal = ({ habit, isOpen, onClose, onToggleDay }) => {
-  const [monthData, setMonthData] = useState([])
-  const calendar = useCalendar()
-  
+  const calendar = useCalendar();
+
   const { data, loading, refetch } = useQuery(GET_HABIT_MONTH_DATA, {
     variables: {
       externalId: habit?.externalId,
       year: calendar.year,
-      month: calendar.month
+      month: calendar.month,
     },
     skip: !isOpen || !habit,
-    fetchPolicy: 'network-only'
-  })
-  
-  useEffect(() => {
-    if (data?.habitMonthData) {
-      setMonthData(data.habitMonthData)
-    }
-  }, [data])
-  
+    fetchPolicy: "network-only",
+  });
+
   useEffect(() => {
     if (isOpen && habit) {
-      refetch()
+      refetch();
     }
-  }, [isOpen, habit, calendar.year, calendar.month, refetch])
-  
+  }, [isOpen, habit, calendar.year, calendar.month, refetch]);
+
   const handleDayClick = async (date) => {
-    await onToggleDay(habit.externalId, date)
-    refetch()
-  }
-  
-  if (!habit) return null
-  
+    await onToggleDay(habit.externalId, date);
+    // Refetch month data to update the calendar view
+    refetch();
+  };
+
+  if (!habit) return null;
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -51,26 +45,26 @@ const HabitDetailModal = ({ habit, isOpen, onClose, onToggleDay }) => {
             onClick={onClose}
             className="fixed inset-0 bg-black/60 backdrop-blur-md z-40"
           />
-          
+
           {/* Modal */}
           <motion.div
-            initial={{ y: '100%' }}
+            initial={{ y: "100%" }}
             animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed inset-x-0 bottom-0 z-50 bg-ios-card rounded-t-[32px] max-h-[90vh] overflow-hidden flex flex-col"
             style={{
-              maxWidth: '428px',
-              margin: '0 auto'
+              maxWidth: "428px",
+              margin: "0 auto",
             }}
           >
             {/* Header */}
             <div className="sticky top-0 bg-ios-card z-10 border-b border-ios-border">
               <div className="flex items-start justify-between px-6 py-6">
                 <div className="flex items-start gap-4 flex-1">
-                  <div 
+                  <div
                     className="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0"
-                    style={{ backgroundColor: habit.color + '20' }}
+                    style={{ backgroundColor: habit.color + "20" }}
                   >
                     {habit.emoji}
                   </div>
@@ -89,10 +83,13 @@ const HabitDetailModal = ({ habit, isOpen, onClose, onToggleDay }) => {
                   onClick={onClose}
                   className="w-11 h-11 rounded-full bg-ios-card-secondary hover:bg-ios-border transition-colors flex items-center justify-center flex-shrink-0"
                 >
-                  <X className="w-6 h-6 text-ios-text-primary" strokeWidth={2.5} />
+                  <X
+                    className="w-6 h-6 text-ios-text-primary"
+                    strokeWidth={2.5}
+                  />
                 </button>
               </div>
-              
+
               {/* Streak Info */}
               <div className="px-6 py-6 border-t border-ios-border bg-ios-bg/30">
                 <div className="flex gap-6">
@@ -104,7 +101,7 @@ const HabitDetailModal = ({ habit, isOpen, onClose, onToggleDay }) => {
                       {habit.currentStreak}
                     </p>
                     <p className="text-xs text-ios-text-muted mt-1">
-                      {habit.currentStreak === 1 ? 'day' : 'days'}
+                      {habit.currentStreak === 1 ? "day" : "days"}
                     </p>
                   </div>
                   <div className="w-px bg-ios-border" />
@@ -112,38 +109,47 @@ const HabitDetailModal = ({ habit, isOpen, onClose, onToggleDay }) => {
                     <p className="text-xs font-semibold text-ios-text-secondary uppercase tracking-wide mb-2">
                       Longest Streak
                     </p>
-                    <p className="text-3xl font-bold" style={{ color: habit.color }}>
+                    <p
+                      className="text-3xl font-bold"
+                      style={{ color: habit.color }}
+                    >
                       {habit.longestStreak}
                     </p>
                     <p className="text-xs text-ios-text-muted mt-1">
-                      {habit.longestStreak === 1 ? 'day' : 'days'}
+                      {habit.longestStreak === 1 ? "day" : "days"}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             {/* Calendar Navigation */}
             <div className="flex items-center justify-between px-6 py-5 bg-ios-bg/20">
               <button
                 onClick={calendar.goToPreviousMonth}
                 className="w-11 h-11 rounded-full bg-ios-card-secondary hover:bg-ios-border transition-colors flex items-center justify-center active:scale-95"
               >
-                <ChevronLeft className="w-6 h-6 text-ios-text-primary" strokeWidth={2.5} />
+                <ChevronLeft
+                  className="w-6 h-6 text-ios-text-primary"
+                  strokeWidth={2.5}
+                />
               </button>
-              
+
               <h3 className="text-xl font-bold text-ios-text-primary tracking-tight">
                 {calendar.monthName} {calendar.year}
               </h3>
-              
+
               <button
                 onClick={calendar.goToNextMonth}
                 className="w-11 h-11 rounded-full bg-ios-card-secondary hover:bg-ios-border transition-colors flex items-center justify-center active:scale-95"
               >
-                <ChevronRight className="w-6 h-6 text-ios-text-primary" strokeWidth={2.5} />
+                <ChevronRight
+                  className="w-6 h-6 text-ios-text-primary"
+                  strokeWidth={2.5}
+                />
               </button>
             </div>
-            
+
             {/* Calendar Grid */}
             <div className="flex-1 px-6 pb-8 pt-2 overflow-y-auto">
               {loading ? (
@@ -152,7 +158,7 @@ const HabitDetailModal = ({ habit, isOpen, onClose, onToggleDay }) => {
                 </div>
               ) : (
                 <CalendarGrid
-                  days={monthData}
+                  days={data?.habitMonthData || []}
                   color={habit.color}
                   onDayClick={handleDayClick}
                 />
@@ -162,7 +168,7 @@ const HabitDetailModal = ({ habit, isOpen, onClose, onToggleDay }) => {
         </>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};
 
-export default HabitDetailModal
+export default HabitDetailModal;
