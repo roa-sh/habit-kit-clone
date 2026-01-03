@@ -1,0 +1,19 @@
+{
+  "name": "HabitKit Clone",
+  "short_name": "HabitKit",
+  "description": "Track your daily habits with ease",
+  "theme_color": "#a855f7",
+  "background_color": "#0a0a0a",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+

@@ -1,0 +1,898 @@
+  [1m[35m (316.9ms)[0m  [1m[35mCREATE DATABASE "habitkit_development" ENCODING = 'unicode'[0m
+  [1m[35m (114.9ms)[0m  [1m[35mCREATE DATABASE "habitkit_test" ENCODING = 'unicode'[0m
+  [1m[35m (2.8ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT pg_try_advisory_lock(7572572751403606065)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateCompletionStates (20240101000001)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.5ms)[0m  [1m[35m      CREATE TYPE completion_state AS ENUM (
+        'not_started',
+        'in_progress', 
+        'completed',
+        'skipped',
+        'failed'
+      );
+[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20240101000001"]]
+  [1m[36mTRANSACTION (3.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateHabits (20240101000002)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (6.6ms)[0m  [1m[35mCREATE TABLE "habits" ("id" bigserial primary key, "external_id" character varying NOT NULL, "name" character varying NOT NULL, "description" text, "emoji" character varying DEFAULT '⚡', "color" character varying DEFAULT '#a855f7', "streak_goal" character varying DEFAULT 'none', "completions" json DEFAULT '[]', "current_streak" integer DEFAULT 0, "longest_streak" integer DEFAULT 0, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_habits_on_external_id" ON "habits" ("external_id")[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE INDEX "index_habits_on_created_at" ON "habits" ("created_at")[0m
+  [1m[35m (0.5ms)[0m  [1m[35mCREATE INDEX "index_habits_on_updated_at" ON "habits" ("updated_at")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20240101000002"]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateUserSettings (20240101000003)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (1.8ms)[0m  [1m[35mCREATE TABLE "user_settings" ("id" bigserial primary key, "external_id" character varying NOT NULL, "compact_days" integer DEFAULT 5 NOT NULL, "show_habit_names" boolean DEFAULT TRUE NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_user_settings_on_external_id" ON "user_settings" ("external_id")[0m
+  [1m[35m (0.4ms)[0m  [1m[35mALTER TABLE "user_settings" ADD CONSTRAINT check_compact_days_range CHECK (compact_days >= 1 AND compact_days <= 7)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20240101000003"]]
+  [1m[36mTRANSACTION (5.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.2ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", "2026-01-03 20:24:30.219828"], ["updated_at", "2026-01-03 20:24:30.219828"]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT pg_advisory_unlock(7572572751403606065)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (8.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mUserSettings Load (0.9ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" WHERE "user_settings"."external_id" = $1 LIMIT $2[0m  [["external_id", "default-settings"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mUserSettings Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "user_settings" WHERE "user_settings"."external_id" = $1 LIMIT $2[0m  [["external_id", "default-settings"], ["LIMIT", 1]]
+  [1m[36mUserSettings Create (0.7ms)[0m  [1m[32mINSERT INTO "user_settings" ("external_id", "compact_days", "show_habit_names", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["external_id", "default-settings"], ["compact_days", 5], ["show_habit_names", true], ["created_at", "2026-01-03 20:25:05.549622"], ["updated_at", "2026-01-03 20:25:05.549622"]]
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mHabit Load (1.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mHabit Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  [1m[36mHabit Create (1.1ms)[0m  [1m[32mINSERT INTO "habits" ("external_id", "name", "description", "emoji", "color", "streak_goal", "completions", "current_streak", "longest_streak", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING "id"[0m  [["external_id", "sample-habit-1"], ["name", "Morning Exercise"], ["description", "30 minutes of cardio"], ["emoji", "🏃"], ["color", "#10b981"], ["streak_goal", "daily"], ["completions", "[]"], ["current_streak", 0], ["longest_streak", 0], ["created_at", "2026-01-03 20:25:05.571780"], ["updated_at", "2026-01-03 20:25:05.571780"]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+Started POST "/graphql" for ::1 at 2026-01-03 15:42:16 -0500
+Started POST "/graphql" for ::1 at 2026-01-03 15:44:42 -0500
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by GraphqlController#execute as */*
+  Parameters: {"query"=>"{ currentServerDate }", "graphql"=>{"query"=>"{ currentServerDate }"}}
+Completed 200 OK in 441ms (Views: 0.2ms | ActiveRecord: 0.0ms | Allocations: 124792)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:44:52 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (9.6ms)[0m  [1m[34mSELECT "habits".* FROM "habits" ORDER BY "habits"."created_at" DESC[0m
+  ↳ app/controllers/graphql_controller.rb:15:in `execute'
+Completed 200 OK in 55ms (Views: 0.2ms | ActiveRecord: 15.4ms | Allocations: 18680)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:45:04 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.8ms)[0m  [1m[34mSELECT "habits".* FROM "habits" ORDER BY "habits"."created_at" DESC[0m
+  ↳ app/controllers/graphql_controller.rb:15:in `execute'
+Completed 200 OK in 11ms (Views: 0.3ms | ActiveRecord: 0.8ms | Allocations: 2559)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:47:55 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.5ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.6ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.9ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:47:55Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:47:55.430630"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 37ms (Views: 0.3ms | ActiveRecord: 3.9ms | Allocations: 9651)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:47:56 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.3ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:47:55Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:47:56Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:47:56.206524"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 10ms (Views: 0.3ms | ActiveRecord: 1.9ms | Allocations: 6678)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:47:58 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.5ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.7ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.3ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:47:55Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:47:58.832383"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 24ms (Views: 0.2ms | ActiveRecord: 2.7ms | Allocations: 6357)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:47:59 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.5ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.3ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:59Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:47:59.223999"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 13ms (Views: 0.2ms | ActiveRecord: 2.7ms | Allocations: 6260)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:48:00 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (4.8ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (1.7ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.8ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:59Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:00Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:48:00.235515"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 21ms (Views: 0.2ms | ActiveRecord: 8.4ms | Allocations: 6426)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:48:00 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.9ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.4ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:59Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:00Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:01Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:48:01.080237"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.4ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 2], ["longest_streak", 2], ["id", 1]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (17.5ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 113ms (Views: 0.3ms | ActiveRecord: 20.6ms | Allocations: 7182)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:48:01 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-03"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-03"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.6ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:59Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:00Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:01Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:01Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:48:01.728885"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.4ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 3], ["longest_streak", 3], ["id", 1]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 14ms (Views: 0.2ms | ActiveRecord: 3.3ms | Allocations: 7329)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:48:05 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" ORDER BY "habits"."created_at" DESC[0m
+  ↳ app/controllers/graphql_controller.rb:15:in `execute'
+Completed 200 OK in 3ms (Views: 0.2ms | ActiveRecord: 0.4ms | Allocations: 2284)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:48:07 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.5ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (11.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (1.7ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:59Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:01Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:01Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:48:07.991197"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.4ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 2], ["longest_streak", 3], ["id", 1]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 27ms (Views: 0.2ms | ActiveRecord: 15.6ms | Allocations: 7265)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:48:08 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (1.2ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.5ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:59Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T20:48:01Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:48:08.511219"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.3ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 1], ["longest_streak", 3], ["id", 1]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.5ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 15ms (Views: 0.4ms | ActiveRecord: 3.3ms | Allocations: 7187)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:48:08 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-03"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-03"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (5.6ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:59Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 20:48:08.931123"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (1.0ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 0], ["longest_streak", 3], ["id", 1]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 20ms (Views: 0.4ms | ActiveRecord: 9.2ms | Allocations: 7051)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:52:26 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.9ms)[0m  [1m[34mSELECT "habits".* FROM "habits" ORDER BY "habits"."created_at" DESC[0m
+  ↳ app/controllers/graphql_controller.rb:15:in `execute'
+Completed 200 OK in 10ms (Views: 0.5ms | ActiveRecord: 0.9ms | Allocations: 2267)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:52:26 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (8.4ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 41ms (Views: 0.2ms | ActiveRecord: 20.7ms | Allocations: 6232)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:52:33 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" ORDER BY "habits"."created_at" DESC[0m
+  ↳ app/controllers/graphql_controller.rb:15:in `execute'
+Completed 200 OK in 4ms (Views: 0.2ms | ActiveRecord: 0.4ms | Allocations: 2526)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:52:33 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.4ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 2ms (Views: 0.1ms | ActiveRecord: 0.4ms | Allocations: 1223)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:55:58 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (4.8ms)[0m  [1m[34mSELECT "habits".* FROM "habits" ORDER BY "habits"."created_at" DESC[0m
+  ↳ app/controllers/graphql_controller.rb:15:in `execute'
+Completed 200 OK in 20ms (Views: 0.4ms | ActiveRecord: 4.8ms | Allocations: 2265)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 15:55:58 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (1.7ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 5ms (Views: 0.1ms | ActiveRecord: 1.7ms | Allocations: 1223)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:20 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabits", "variables"=>{}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nquery GetHabits {\n  habits {\n    ...HabitWithLast5Days\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (2.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" ORDER BY "habits"."created_at" DESC[0m
+  ↳ app/controllers/graphql_controller.rb:15:in `execute'
+Completed 200 OK in 12ms (Views: 0.6ms | ActiveRecord: 2.3ms | Allocations: 2265)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:20 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (1.7ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 8ms (Views: 0.3ms | ActiveRecord: 1.7ms | Allocations: 1223)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:26 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.5ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 5ms (Views: 0.2ms | ActiveRecord: 0.5ms | Allocations: 1223)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:30 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (1.5ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.5ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:01:30Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:01:30.569676"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 12ms (Views: 0.2ms | ActiveRecord: 3.3ms | Allocations: 6844)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:30 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.4ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 4ms (Views: 0.2ms | ActiveRecord: 0.4ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:31 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (27.0ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:31Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:01:31.311612"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (1.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 51ms (Views: 0.2ms | ActiveRecord: 30.2ms | Allocations: 6556)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:31 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.3ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 2ms (Views: 0.1ms | ActiveRecord: 0.3ms | Allocations: 1230)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:41 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.7ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:01:41Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:01:41.648623"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 16ms (Views: 0.4ms | ActiveRecord: 2.6ms | Allocations: 6631)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:41 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.3ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 3ms (Views: 0.1ms | ActiveRecord: 0.3ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:42 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.5ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.6ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:47:58Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:01:42.301997"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 18ms (Views: 1.0ms | ActiveRecord: 3.9ms | Allocations: 6545)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:42 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.5ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 5ms (Views: 0.1ms | ActiveRecord: 0.5ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.3ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:01:43Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:01:43.332398"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 9ms (Views: 0.2ms | ActiveRecord: 1.8ms | Allocations: 6627)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.3ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 2ms (Views: 0.1ms | ActiveRecord: 0.3ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.5ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:43Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:07Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:01:43.760501"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 14ms (Views: 0.4ms | ActiveRecord: 3.1ms | Allocations: 6545)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:01:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.3ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 2ms (Views: 0.1ms | ActiveRecord: 0.3ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:41 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"CreateHabit", "variables"=>{"name"=>"Running", "description"=>"", "emoji"=>"⚡", "color"=>"#3b82f6", "streakGoal"=>"NONE"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation CreateHabit($name: String!, $description: String, $emoji: String, $color: String, $streakGoal: StreakGoalEnum) {\n  createHabit(\n    input: {name: $name, description: $description, emoji: $emoji, color: $color, streakGoal: $streakGoal}\n  ) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"CreateHabit", "variables"=>{"name"=>"Running", "description"=>"", "emoji"=>"⚡", "color"=>"#3b82f6", "streakGoal"=>"NONE"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation CreateHabit($name: String!, $description: String, $emoji: String, $color: String, $streakGoal: StreakGoalEnum) {\n  createHabit(\n    input: {name: $name, description: $description, emoji: $emoji, color: $color, streakGoal: $streakGoal}\n  ) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mTRANSACTION (2.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/graphql/mutations/create_habit.rb:25:in `resolve'
+  [1m[36mHabit Exists? (0.9ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/create_habit.rb:25:in `resolve'
+  [1m[36mHabit Create (0.8ms)[0m  [1m[32mINSERT INTO "habits" ("external_id", "name", "description", "emoji", "color", "streak_goal", "completions", "current_streak", "longest_streak", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING "id"[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["name", "Running"], ["description", ""], ["emoji", "⚡"], ["color", "#3b82f6"], ["streak_goal", "none"], ["completions", "[]"], ["current_streak", 0], ["longest_streak", 0], ["created_at", "2026-01-03 21:02:42.012662"], ["updated_at", "2026-01-03 21:02:42.012662"]]
+  ↳ app/graphql/mutations/create_habit.rb:25:in `resolve'
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/graphql/mutations/create_habit.rb:25:in `resolve'
+Completed 200 OK in 24ms (Views: 0.3ms | ActiveRecord: 4.5ms | Allocations: 5135)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:42 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.4ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 3ms (Views: 0.1ms | ActiveRecord: 0.4ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2025-12-30"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["id", 2], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.8ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:43Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:02:43.586053"], ["id", 2]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 16ms (Views: 0.9ms | ActiveRecord: 2.8ms | Allocations: 6235)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.4ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 4ms (Views: 0.2ms | ActiveRecord: 0.4ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:44 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.7ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (13.2ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["id", 2], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.5ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:43Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:44Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:02:44.447970"], ["id", 2]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (1.4ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 31ms (Views: 0.5ms | ActiveRecord: 16.2ms | Allocations: 6354)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:44 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.5ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 3ms (Views: 0.1ms | ActiveRecord: 0.5ms | Allocations: 1230)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:45 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.5ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (2.1ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["id", 2], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.8ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:43Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:44Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:45Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:02:45.365318"], ["id", 2]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (1.7ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (2.1ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 23ms (Views: 0.4ms | ActiveRecord: 7.5ms | Allocations: 6479)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:45 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.6ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 4ms (Views: 0.2ms | ActiveRecord: 0.6ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:46 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.6ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.5ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:43Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:46Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:02:46.930717"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 17ms (Views: 0.9ms | ActiveRecord: 3.3ms | Allocations: 6627)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:02:46 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (2.2ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 7ms (Views: 0.3ms | ActiveRecord: 2.2ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:03:30 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.7ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["id", 2], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.6ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:43Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:03:30Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:45Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:03:30.964186"], ["id", 2]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 30ms (Views: 0.4ms | ActiveRecord: 3.6ms | Allocations: 6463)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:03:30 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.6ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 5ms (Views: 0.1ms | ActiveRecord: 0.6ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:03:41 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/types/query_type.rb:31:in `habit_month_data'
+Completed 200 OK in 4ms (Views: 0.6ms | ActiveRecord: 0.2ms | Allocations: 3593)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:07:03 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.7ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/types/query_type.rb:31:in `habit_month_data'
+Completed 200 OK in 15ms (Views: 0.5ms | ActiveRecord: 0.7ms | Allocations: 3557)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:07:08 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (20.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/types/query_type.rb:31:in `habit_month_data'
+Completed 200 OK in 26ms (Views: 1.1ms | ActiveRecord: 20.4ms | Allocations: 3552)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:08:56 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.7ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/types/query_type.rb:31:in `habit_month_data'
+Completed 200 OK in 18ms (Views: 0.8ms | ActiveRecord: 0.7ms | Allocations: 3551)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:36 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.9ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 10ms (Views: 0.4ms | ActiveRecord: 0.9ms | Allocations: 1231)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:40 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-01"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (1.1ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (1.5ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.9ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:43Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:40Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:11:40.464753"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (2.2ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 25ms (Views: 0.4ms | ActiveRecord: 6.5ms | Allocations: 6559)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:40 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.4ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 3ms (Views: 0.1ms | ActiveRecord: 0.4ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:41 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.8ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.7ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:11:41Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:40Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:11:41.498756"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (1.0ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 17ms (Views: 0.4ms | ActiveRecord: 5.0ms | Allocations: 6627)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:41 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.6ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 4ms (Views: 0.2ms | ActiveRecord: 0.6ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:42 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2025-12-31"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.5ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:42Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:40Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:11:42.238394"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 13ms (Views: 0.8ms | ActiveRecord: 2.3ms | Allocations: 6545)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:42 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.4ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 3ms (Views: 0.4ms | ActiveRecord: 0.4ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.5ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:42Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:40Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:11:43Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:11:43.255522"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.3ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 1], ["longest_streak", 3], ["id", 1]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.1ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 10ms (Views: 0.3ms | ActiveRecord: 2.6ms | Allocations: 7189)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.3ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 3ms (Views: 0.2ms | ActiveRecord: 0.3ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"sample-habit-1", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.7ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "sample-habit-1"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "sample-habit-1"], ["id", 1], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.6ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:01:42Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:42Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:40Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:43Z\",\"notes\":null},{\"date\":\"2026-01-03\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T20:48:08Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:11:43.956506"], ["id", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (4.9ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 0], ["longest_streak", 3], ["id", 1]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (1.5ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 26ms (Views: 0.5ms | ActiveRecord: 9.4ms | Allocations: 7051)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:43 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.6ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 5ms (Views: 0.2ms | ActiveRecord: 0.6ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:45 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.4ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["id", 2], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.3ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:43Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:03:30Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:45Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:11:45Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:11:45.776481"], ["id", 2]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.2ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 3], ["longest_streak", 3], ["id", 2]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 12ms (Views: 0.5ms | ActiveRecord: 2.5ms | Allocations: 7236)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:45 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.4ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 3ms (Views: 0.2ms | ActiveRecord: 0.4ms | Allocations: 1229)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:46 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"ToggleHabitCompletion", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "date"=>"2026-01-02"}, "query"=>"fragment HabitFields on Habit {\n  id\n  externalId\n  name\n  description\n  emoji\n  color\n  streakGoal\n  currentStreak\n  longestStreak\n  createdAt\n  updatedAt\n  __typename\n}\n\nfragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nfragment HabitWithLast5Days on Habit {\n  ...HabitFields\n  last5Days {\n    ...CompletionFields\n    __typename\n  }\n  __typename\n}\n\nmutation ToggleHabitCompletion($externalId: String!, $date: String) {\n  toggleHabitCompletion(input: {externalId: $externalId, date: $date}) {\n    habit {\n      ...HabitWithLast5Days\n      __typename\n    }\n    newState\n    errors\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.3ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:13:in `resolve'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "habits" WHERE "habits"."external_id" = $1 AND "habits"."id" != $2 LIMIT $3[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["id", 2], ["LIMIT", 1]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.4ms)[0m  [1m[33mUPDATE "habits" SET "completions" = $1, "updated_at" = $2 WHERE "habits"."id" = $3[0m  [["completions", "[{\"date\":\"2025-12-30\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:43Z\",\"notes\":null},{\"date\":\"2025-12-31\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:03:30Z\",\"notes\":null},{\"date\":\"2026-01-01\",\"state\":\"completed\",\"completed_at\":\"2026-01-03T21:02:45Z\",\"notes\":null},{\"date\":\"2026-01-02\",\"state\":\"not_started\",\"completed_at\":\"2026-01-03T21:11:46Z\",\"notes\":null}]"], ["updated_at", "2026-01-03 21:11:46.507397"], ["id", 2]]
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Update (0.2ms)[0m  [1m[33mUPDATE "habits" SET "current_streak" = $1, "longest_streak" = $2 WHERE "habits"."id" = $3[0m  [["current_streak", 0], ["longest_streak", 3], ["id", 2]]
+  ↳ app/models/habit.rb:175:in `update_streaks'
+  [1m[36mTRANSACTION (0.8ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/habit.rb:58:in `update_completion'
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/graphql/mutations/toggle_habit_completion.rb:23:in `resolve'
+Completed 200 OK in 13ms (Views: 0.3ms | ActiveRecord: 2.4ms | Allocations: 7073)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:46 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (0.3ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 3ms (Views: 0.1ms | ActiveRecord: 0.3ms | Allocations: 1225)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:11:49 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetHabitMonthData", "variables"=>{"externalId"=>"09ba4616-cdc2-4a20-83c2-01a56a700a4c", "year"=>2026, "month"=>1}, "query"=>"fragment CompletionFields on Completion {\n  date\n  state\n  completed\n  completedAt\n  notes\n  __typename\n}\n\nquery GetHabitMonthData($externalId: String!, $year: Int!, $month: Int!) {\n  habitMonthData(externalId: $externalId, year: $year, month: $month) {\n    ...CompletionFields\n    __typename\n  }\n}"}}
+  [1m[36mHabit Load (0.2ms)[0m  [1m[34mSELECT "habits".* FROM "habits" WHERE "habits"."external_id" = $1 LIMIT $2[0m  [["external_id", "09ba4616-cdc2-4a20-83c2-01a56a700a4c"], ["LIMIT", 1]]
+  ↳ app/graphql/types/query_type.rb:31:in `habit_month_data'
+Completed 200 OK in 5ms (Views: 0.5ms | ActiveRecord: 0.2ms | Allocations: 3555)
+
+
+Started POST "/graphql" for ::1 at 2026-01-03 16:12:02 -0500
+Processing by GraphqlController#execute as */*
+  Parameters: {"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}", "graphql"=>{"operationName"=>"GetUserSettings", "variables"=>{}, "query"=>"query GetUserSettings {\n  userSettings {\n    id\n    externalId\n    compactDays\n    showHabitNames\n    createdAt\n    updatedAt\n    __typename\n  }\n}"}}
+  [1m[36mUserSettings Load (6.6ms)[0m  [1m[34mSELECT "user_settings".* FROM "user_settings" ORDER BY "user_settings"."id" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  ↳ app/models/user_settings.rb:14:in `current'
+Completed 200 OK in 19ms (Views: 1.7ms | ActiveRecord: 6.6ms | Allocations: 1225)
+
+

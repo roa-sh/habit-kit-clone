@@ -1,0 +1,42 @@
+require_relative 'boot'
+
+require 'rails'
+# Pick the frameworks you want:
+require 'active_model/railtie'
+require 'active_job/railtie'
+require 'active_record/railtie'
+require 'action_controller/railtie'
+require 'action_mailer/railtie'
+require 'action_view/railtie'
+require 'action_cable/engine'
+# require 'sprockets/railtie'
+# require 'rails/test_unit/railtie'
+
+# Require the gems listed in Gemfile, including any gems
+# you've limited to :test, :development, or :production.
+Bundler.require(*Rails.groups)
+
+module HabitkitClone
+  class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 7.0
+
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    # Set timezone (use UTC or user's timezone)
+    config.time_zone = 'UTC'
+    config.active_record.default_timezone = :utc
+    
+    # Always use Time.current instead of Time.now
+    config.active_support.remove_deprecated_time_with_zone_name = true
+
+    # Only loads a smaller set of middleware suitable for API only apps.
+    # Middleware like session, flash, cookies can be added back manually.
+    # Skip views, helpers and assets when generating a new resource.
+    config.api_only = true
+  end
+end
+
