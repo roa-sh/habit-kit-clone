@@ -1,18 +1,26 @@
 import { useQuery, useMutation } from '@apollo/client'
 import { GET_HABITS } from '../graphql/queries'
 import { CREATE_HABIT, UPDATE_HABIT, DELETE_HABIT, TOGGLE_HABIT_COMPLETION, UPDATE_HABIT_COMPLETION } from '../graphql/mutations'
+import { useSettings } from './useSettings'
 
 export const useHabits = () => {
+  const { settings } = useSettings()
   const { data, loading, error, refetch } = useQuery(GET_HABITS, {
-    fetchPolicy: 'cache-and-network'
+    variables: { days: settings?.compactDays || 5 },
+    fetchPolicy: 'cache-and-network',
+    skip: !settings
   })
   
   const [createHabitMutation, { loading: creating }] = useMutation(CREATE_HABIT, {
     update(cache, { data: { createHabit } }) {
       if (createHabit.habit && createHabit.errors.length === 0) {
-        const existingHabits = cache.readQuery({ query: GET_HABITS })
+        const existingHabits = cache.readQuery({ 
+          query: GET_HABITS,
+          variables: { days: settings?.compactDays || 5 }
+        })
         cache.writeQuery({
           query: GET_HABITS,
+          variables: { days: settings?.compactDays || 5 },
           data: {
             habits: [createHabit.habit, ...(existingHabits?.habits || [])]
           }
@@ -25,9 +33,13 @@ export const useHabits = () => {
   const [deleteHabitMutation, { loading: deleting }] = useMutation(DELETE_HABIT, {
     update(cache, { data: { deleteHabit } }, { variables }) {
       if (deleteHabit.success) {
-        const existingHabits = cache.readQuery({ query: GET_HABITS })
+        const existingHabits = cache.readQuery({ 
+          query: GET_HABITS,
+          variables: { days: settings?.compactDays || 5 }
+        })
         cache.writeQuery({
           query: GET_HABITS,
+          variables: { days: settings?.compactDays || 5 },
           data: {
             habits: existingHabits.habits.filter(
               h => h.externalId !== variables.externalId
@@ -49,7 +61,10 @@ export const useHabits = () => {
   const createHabit = async (habitData) => {
     try {
       const { data } = await createHabitMutation({
-        variables: habitData
+        variables: {
+          ...habitData,
+          days: settings?.compactDays || 5
+        }
       })
       
       if (data.createHabit.errors.length > 0) {
@@ -68,7 +83,8 @@ export const useHabits = () => {
       const { data } = await updateHabitMutation({
         variables: {
           externalId,
-          ...habitData
+          ...habitData,
+          days: settings?.compactDays || 5
         }
       })
       
@@ -105,7 +121,8 @@ export const useHabits = () => {
       const { data } = await toggleCompletionMutation({
         variables: {
           externalId,
-          date: date?.toString() || null
+          date: date?.toString() || null,
+          days: settings?.compactDays || 5
         }
       })
       
@@ -127,7 +144,8 @@ export const useHabits = () => {
           externalId,
           date: date?.toString() || null,
           state,
-          notes
+          notes,
+          days: settings?.compactDays || 5
         }
       })
       

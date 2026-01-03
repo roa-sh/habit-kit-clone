@@ -1,12 +1,12 @@
 import { gql } from '@apollo/client'
-import { HABIT_WITH_LAST_5_DAYS, HABIT_FRAGMENT, COMPLETION_FRAGMENT, HABIT_STATS_FRAGMENT } from './fragments'
+import { HABIT_WITH_LAST_N_DAYS, HABIT_WITH_LAST_5_DAYS, HABIT_FRAGMENT, COMPLETION_FRAGMENT, HABIT_STATS_FRAGMENT } from './fragments'
 
 export const GET_HABITS = gql`
-  ${HABIT_WITH_LAST_5_DAYS}
+  ${HABIT_WITH_LAST_N_DAYS}
   
-  query GetHabits {
+  query GetHabits($days: Int = 5) {
     habits {
-      ...HabitWithLast5Days
+      ...HabitWithLastNDays
     }
   }
 `

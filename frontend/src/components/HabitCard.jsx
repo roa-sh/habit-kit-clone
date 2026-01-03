@@ -3,32 +3,41 @@ import { motion } from 'framer-motion'
 
 const HabitCard = ({ habit, showName = true, compactDays = 5, onCardClick, onDayClick }) => {
   const displayDays = useMemo(() => {
-    if (!habit.last5Days) return []
-    return habit.last5Days.slice(-compactDays)
-  }, [habit.last5Days, compactDays])
+    if (!habit.lastNDays) return []
+    return habit.lastNDays.slice(-compactDays)
+  }, [habit.lastNDays, compactDays])
   
   return (
     <div 
       className="bg-ios-card rounded-2xl border-l-[5px] hover:shadow-lg transition-all cursor-pointer"
       style={{ borderLeftColor: habit.color }}
     >
-      <div className="py-2 px-3 flex items-center justify-between gap-3">
-        {/* Left side: Emoji and Habit Info */}
-        <div className="flex items-center gap-3 flex-1 min-w-0" onClick={onCardClick}>
+      <div className="py-1.5 px-3 flex items-center gap-3">
+        {/* Left side: Emoji and Habit Info - flex-shrink allows it to compress when squares overflow */}
+        <div 
+          className="flex items-center gap-2.5 flex-1 min-w-0 overflow-hidden"
+          onClick={onCardClick}
+        >
           <div 
-            className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
             style={{ backgroundColor: habit.color + '20' }}
           >
             {habit.emoji}
           </div>
           
           {showName && (
-            <div className="flex-1 min-w-0">
-              <h3 className="text-base font-semibold text-ios-text-primary truncate leading-tight">
-                {habit.name}
-              </h3>
+            <div className="flex-1 min-w-0 overflow-hidden">
+              {/* Habit name in a contained rounded box with colored background */}
+              <div 
+                className="inline-block px-3 py-1 rounded-xl max-w-full"
+                style={{ backgroundColor: habit.color + '15' }}
+              >
+                <h3 className="text-sm font-semibold text-ios-text-primary truncate leading-tight">
+                  {habit.name}
+                </h3>
+              </div>
               {habit.description && (
-                <p className="text-xs text-ios-text-secondary truncate leading-tight">
+                <p className="text-xs text-ios-text-secondary truncate leading-tight mt-0.5">
                   {habit.description}
                 </p>
               )}
@@ -36,7 +45,7 @@ const HabitCard = ({ habit, showName = true, compactDays = 5, onCardClick, onDay
           )}
         </div>
         
-        {/* Right side: Day squares (no numbers - just status indicators) */}
+        {/* Right side: Day squares with proper spacing to align with header */}
         <div className="flex gap-1 flex-shrink-0">
           {displayDays.map((day) => (
             <motion.button
@@ -45,14 +54,14 @@ const HabitCard = ({ habit, showName = true, compactDays = 5, onCardClick, onDay
                 e.stopPropagation()
                 onDayClick(day.date)
               }}
-              className="w-8 h-8 rounded-xl flex items-center justify-center relative overflow-hidden transition-all active:scale-95 border-2"
+              className="w-6 h-6 rounded-md flex items-center justify-center relative overflow-hidden transition-all active:scale-95"
               style={{
-                backgroundColor: day.completed ? habit.color : '#2c2c2e',
-                borderColor: day.completed ? habit.color : 'transparent'
+                backgroundColor: day.completed ? habit.color : habit.color + '20',
+                border: 'none'
               }}
               whileTap={{ scale: 0.92 }}
             >
-              {/* No number - just empty box or colored box */}
+              {/* Subtle overlay for completed state */}
               {day.completed && (
                 <motion.div
                   initial={{ scale: 0, opacity: 0 }}

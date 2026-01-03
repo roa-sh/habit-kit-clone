@@ -7,13 +7,18 @@ import NewHabitView from './components/NewHabitView'
 import CompactListSettings from './components/CompactListSettings'
 
 function App() {
-  const { habits, loading, createHabit, toggleCompletion } = useHabits()
+  const { habits, loading, createHabit, toggleCompletion, refetch } = useHabits()
   const [selectedHabit, setSelectedHabit] = useState(null)
   const [showNewHabit, setShowNewHabit] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   
   const handleToggleDay = async (externalId, date) => {
-    await toggleCompletion(externalId, date)
+    try {
+      await toggleCompletion(externalId, date)
+      await refetch() // Force refetch to update the UI
+    } catch (error) {
+      console.error('Error toggling completion:', error)
+    }
   }
   
   const handleCreateHabit = async (habitData) => {

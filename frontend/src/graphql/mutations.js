@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
-import { HABIT_WITH_LAST_5_DAYS, COMPLETION_FRAGMENT } from './fragments'
+import { HABIT_WITH_LAST_N_DAYS, COMPLETION_FRAGMENT } from './fragments'
 
 export const CREATE_HABIT = gql`
-  ${HABIT_WITH_LAST_5_DAYS}
+  ${HABIT_WITH_LAST_N_DAYS}
   
   mutation CreateHabit(
     $name: String!
@@ -10,6 +10,7 @@ export const CREATE_HABIT = gql`
     $emoji: String
     $color: String
     $streakGoal: StreakGoalEnum
+    $days: Int = 5
   ) {
     createHabit(
       input: {
@@ -21,7 +22,7 @@ export const CREATE_HABIT = gql`
       }
     ) {
       habit {
-        ...HabitWithLast5Days
+        ...HabitWithLastNDays
       }
       errors
     }
@@ -29,7 +30,7 @@ export const CREATE_HABIT = gql`
 `
 
 export const UPDATE_HABIT = gql`
-  ${HABIT_WITH_LAST_5_DAYS}
+  ${HABIT_WITH_LAST_N_DAYS}
   
   mutation UpdateHabit(
     $externalId: String!
@@ -38,6 +39,7 @@ export const UPDATE_HABIT = gql`
     $emoji: String
     $color: String
     $streakGoal: StreakGoalEnum
+    $days: Int = 5
   ) {
     updateHabit(
       input: {
@@ -50,7 +52,7 @@ export const UPDATE_HABIT = gql`
       }
     ) {
       habit {
-        ...HabitWithLast5Days
+        ...HabitWithLastNDays
       }
       errors
     }
@@ -67,12 +69,12 @@ export const DELETE_HABIT = gql`
 `
 
 export const TOGGLE_HABIT_COMPLETION = gql`
-  ${HABIT_WITH_LAST_5_DAYS}
+  ${HABIT_WITH_LAST_N_DAYS}
   
-  mutation ToggleHabitCompletion($externalId: String!, $date: String) {
+  mutation ToggleHabitCompletion($externalId: String!, $date: String, $days: Int = 5) {
     toggleHabitCompletion(input: { externalId: $externalId, date: $date }) {
       habit {
-        ...HabitWithLast5Days
+        ...HabitWithLastNDays
       }
       newState
       errors
@@ -81,7 +83,7 @@ export const TOGGLE_HABIT_COMPLETION = gql`
 `
 
 export const UPDATE_HABIT_COMPLETION = gql`
-  ${HABIT_WITH_LAST_5_DAYS}
+  ${HABIT_WITH_LAST_N_DAYS}
   ${COMPLETION_FRAGMENT}
   
   mutation UpdateHabitCompletion(
@@ -89,6 +91,7 @@ export const UPDATE_HABIT_COMPLETION = gql`
     $date: String
     $state: CompletionStateEnum!
     $notes: String
+    $days: Int = 5
   ) {
     updateHabitCompletion(
       input: {
@@ -99,7 +102,7 @@ export const UPDATE_HABIT_COMPLETION = gql`
       }
     ) {
       habit {
-        ...HabitWithLast5Days
+        ...HabitWithLastNDays
       }
       completion {
         ...CompletionFields

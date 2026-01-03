@@ -26,6 +26,18 @@ export const COMPLETION_FRAGMENT = gql`
   }
 `
 
+export const HABIT_WITH_LAST_N_DAYS = gql`
+  ${HABIT_FRAGMENT}
+  ${COMPLETION_FRAGMENT}
+  
+  fragment HabitWithLastNDays on Habit {
+    ...HabitFields
+    lastNDays(days: $days) {
+      ...CompletionFields
+    }
+  }
+`
+
 export const HABIT_WITH_LAST_5_DAYS = gql`
   ${HABIT_FRAGMENT}
   ${COMPLETION_FRAGMENT}

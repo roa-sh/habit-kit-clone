@@ -9,8 +9,8 @@ const HabitList = ({ habits, onHabitClick, onToggleDay, onAddHabit, onOpenSettin
   const { settings } = useSettings()
   
   // Get the day header dates from the first habit (or generate them)
-  const headerDays = habits.length > 0 && habits[0].last5Days 
-    ? habits[0].last5Days.slice(-settings.compactDays)
+  const headerDays = habits.length > 0 && habits[0].lastNDays 
+    ? habits[0].lastNDays.slice(-settings.compactDays)
     : []
   
   return (
@@ -41,15 +41,16 @@ const HabitList = ({ habits, onHabitClick, onToggleDay, onAddHabit, onOpenSettin
             Last {settings.compactDays} day{settings.compactDays !== 1 ? 's' : ''}
           </button>
           
-          {/* Global Day Header - right side - plain text only */}
+          {/* Global Day Header - right side - plain text only with proper spacing */}
+          {/* Adding pr-3 to match the internal padding of habit cards for perfect alignment */}
           {habits.length > 0 && (
-            <div className="flex gap-1">
+            <div className="flex gap-1 pr-3">
               {headerDays.map((day) => {
                 const dateObj = parseISO(day.date)
                 const dayAbbrev = format(dateObj, 'EEE').substring(0, 2) // Tu, We, Th
                 const dayNumber = format(dateObj, 'd')
                 return (
-                  <div key={day.date} className="w-9 flex flex-col items-center gap-0.5">
+                  <div key={day.date} className="w-6 flex flex-col items-center gap-0.5">
                     <span className="text-[9px] font-semibold text-ios-text-muted capitalize leading-none">
                       {dayAbbrev}
                     </span>
