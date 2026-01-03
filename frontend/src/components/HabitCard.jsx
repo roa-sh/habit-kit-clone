@@ -12,14 +12,14 @@ const HabitCard = ({ habit, showName = true, compactDays = 5, onCardClick, onDay
       className="bg-ios-card rounded-2xl border-l-[5px] hover:shadow-lg transition-all cursor-pointer"
       style={{ borderLeftColor: habit.color }}
     >
-      <div className="py-1.5 px-3 flex items-center gap-3">
+      <div className="py-1.5 px-2 flex items-center gap-3">
         {/* Left side: Emoji and Habit Info - flex-shrink allows it to compress when squares overflow */}
         <div 
-          className="flex items-center gap-2.5 flex-1 min-w-0 overflow-hidden"
+          className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden"
           onClick={onCardClick}
         >
           <div 
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
             style={{ backgroundColor: habit.color + '20' }}
           >
             {habit.emoji}
@@ -36,11 +36,6 @@ const HabitCard = ({ habit, showName = true, compactDays = 5, onCardClick, onDay
                   {habit.name}
                 </h3>
               </div>
-              {habit.description && (
-                <p className="text-xs text-ios-text-secondary truncate leading-tight mt-0.5">
-                  {habit.description}
-                </p>
-              )}
             </div>
           )}
         </div>

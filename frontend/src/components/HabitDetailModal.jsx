@@ -61,9 +61,7 @@ const HabitDetailModal = ({ habit, isOpen, onClose, onToggleDay }) => {
             className="fixed inset-x-0 bottom-0 z-50 bg-ios-card rounded-t-[32px] max-h-[90vh] overflow-hidden flex flex-col"
             style={{
               maxWidth: '428px',
-              margin: '0 auto',
-              left: '50%',
-              transform: 'translateX(-50%)'
+              margin: '0 auto'
             }}
           >
             {/* Header */}
