@@ -26,9 +26,9 @@ module HabitkitClone
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # Set timezone (use UTC or user's timezone)
-    config.time_zone = 'UTC'
-    config.active_record.default_timezone = :utc
+    # Set timezone to Eastern Time (UTC-5)
+    config.time_zone = 'Eastern Time (US & Canada)'
+    config.active_record.default_timezone = :local
     
     # Always use Time.current instead of Time.now
     config.active_support.remove_deprecated_time_with_zone_name = true
