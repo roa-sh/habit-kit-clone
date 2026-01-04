@@ -11,7 +11,7 @@ const STREAK_GOALS = [
   { value: 'MONTHLY', label: 'Monthly' }
 ]
 
-const NewHabitView = ({ onClose, onSave, initialData = null }) => {
+const NewHabitView = ({ onClose, onSave, initialData = null, isEditing = false }) => {
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
     description: initialData?.description || '',
@@ -34,7 +34,11 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
     
     setIsSaving(true)
     try {
-      await onSave(formData)
+      if (isEditing && initialData) {
+        await onSave(initialData.externalId, formData)
+      } else {
+        await onSave(formData)
+      }
       onClose()
     } catch (error) {
       alert('Error saving habit: ' + error.message)
@@ -62,7 +66,7 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
             <X className="w-6 h-6 text-ios-text-primary" strokeWidth={2.5} />
           </button>
           <h1 className="text-2xl font-bold text-ios-text-primary tracking-tight">
-            New Habit
+            {isEditing ? 'Edit Habit' : 'New Habit'}
           </h1>
           <div className="w-11" />
         </div>
@@ -168,7 +172,7 @@ const NewHabitView = ({ onClose, onSave, initialData = null }) => {
           className="w-full py-5 bg-habit-purple text-white text-lg font-bold rounded-2xl hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-98 mt-4"
           style={{ boxShadow: '0 4px 12px rgba(168, 85, 247, 0.4)' }}
         >
-          {isSaving ? 'Saving...' : 'Create Habit'}
+          {isSaving ? 'Saving...' : (isEditing ? 'Save Changes' : 'Create Habit')}
         </button>
       </form>
       

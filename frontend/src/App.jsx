@@ -7,9 +7,11 @@ import NewHabitView from "./components/NewHabitView";
 import CompactListSettings from "./components/CompactListSettings";
 
 function App() {
-  const { habits, initialLoading, createHabit, toggleCompletion } = useHabits();
+  const { habits, initialLoading, createHabit, updateHabit, toggleCompletion } =
+    useHabits();
   const [selectedHabit, setSelectedHabit] = useState(null);
   const [showNewHabit, setShowNewHabit] = useState(false);
+  const [editingHabit, setEditingHabit] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
 
   const handleToggleDay = async (externalId, date) => {
@@ -25,6 +27,15 @@ function App() {
     setShowNewHabit(false);
   };
 
+  const handleUpdateHabit = async (externalId, habitData) => {
+    await updateHabit(externalId, habitData);
+    setEditingHabit(null);
+  };
+
+  const handleEditHabit = (habit) => {
+    setEditingHabit(habit);
+  };
+
   if (initialLoading) {
     return (
       <div className="min-h-screen bg-dark-bg flex items-center justify-center">
@@ -36,7 +47,15 @@ function App() {
   return (
     <div className="min-h-screen bg-dark-bg">
       <AnimatePresence mode="wait">
-        {showNewHabit ? (
+        {editingHabit ? (
+          <NewHabitView
+            key="edit-habit"
+            onClose={() => setEditingHabit(null)}
+            onSave={handleUpdateHabit}
+            initialData={editingHabit}
+            isEditing={true}
+          />
+        ) : showNewHabit ? (
           <NewHabitView
             key="new-habit"
             onClose={() => setShowNewHabit(false)}
@@ -59,6 +78,7 @@ function App() {
         isOpen={!!selectedHabit}
         onClose={() => setSelectedHabit(null)}
         onToggleDay={handleToggleDay}
+        onEditHabit={handleEditHabit}
       />
 
       <CompactListSettings

@@ -2,11 +2,13 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { format, parseISO, getDay } from 'date-fns'
 
-const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const CalendarGrid = ({ days, color, onDayClick }) => {
+  // getDay() returns 0 for Sunday, 1 for Monday, etc.
+  // No need to adjust since we want Sunday (0) to be the first column
   const firstDayOffset = days.length > 0 
-    ? (getDay(parseISO(days[0].date)) + 6) % 7 
+    ? getDay(parseISO(days[0].date))
     : 0
   
   return (
