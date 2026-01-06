@@ -7,7 +7,7 @@ import NewHabitView from "./components/NewHabitView";
 import CompactListSettings from "./components/CompactListSettings";
 
 function App() {
-  const { habits, initialLoading, createHabit, updateHabit, toggleCompletion } =
+  const { habits, initialLoading, createHabit, updateHabit, deleteHabit, toggleCompletion } =
     useHabits();
   const [selectedHabit, setSelectedHabit] = useState(null);
   const [showNewHabit, setShowNewHabit] = useState(false);
@@ -36,6 +36,12 @@ function App() {
     setEditingHabit(habit);
   };
 
+  const handleDeleteHabit = async (externalId) => {
+    await deleteHabit(externalId);
+    setEditingHabit(null);
+    setSelectedHabit(null);
+  };
+
   if (initialLoading) {
     return (
       <div className="min-h-screen bg-dark-bg flex items-center justify-center">
@@ -52,6 +58,7 @@ function App() {
             key="edit-habit"
             onClose={() => setEditingHabit(null)}
             onSave={handleUpdateHabit}
+            onDelete={handleDeleteHabit}
             initialData={editingHabit}
             isEditing={true}
           />

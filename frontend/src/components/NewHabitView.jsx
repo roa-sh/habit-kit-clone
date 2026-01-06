@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { X, ChevronRight } from 'lucide-react'
+import { X, ChevronRight, Trash2 } from 'lucide-react'
 import EmojiPicker from './EmojiPicker'
 import ColorPicker from './ColorPicker'
 
@@ -11,7 +11,7 @@ const STREAK_GOALS = [
   { value: 'MONTHLY', label: 'Monthly' }
 ]
 
-const NewHabitView = ({ onClose, onSave, initialData = null, isEditing = false }) => {
+const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing = false }) => {
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
     description: initialData?.description || '',
@@ -23,6 +23,7 @@ const NewHabitView = ({ onClose, onSave, initialData = null, isEditing = false }
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -44,6 +45,24 @@ const NewHabitView = ({ onClose, onSave, initialData = null, isEditing = false }
       alert('Error saving habit: ' + error.message)
     } finally {
       setIsSaving(false)
+    }
+  }
+  
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this habit? This action cannot be undone.')) {
+      return
+    }
+    
+    setIsDeleting(true)
+    try {
+      if (onDelete && initialData) {
+        await onDelete(initialData.externalId)
+      }
+      onClose()
+    } catch (error) {
+      alert('Error deleting habit: ' + error.message)
+    } finally {
+      setIsDeleting(false)
     }
   }
   
@@ -174,6 +193,19 @@ const NewHabitView = ({ onClose, onSave, initialData = null, isEditing = false }
         >
           {isSaving ? 'Saving...' : (isEditing ? 'Save Changes' : 'Create Habit')}
         </button>
+        
+        {/* Delete Button (only when editing) */}
+        {isEditing && onDelete && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="w-full py-5 bg-red-500/10 text-red-500 border-2 border-red-500/30 text-lg font-bold rounded-2xl hover:bg-red-500/20 hover:border-red-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-98 mt-3 flex items-center justify-center gap-2"
+          >
+            <Trash2 className="w-5 h-5" strokeWidth={2.5} />
+            {isDeleting ? 'Deleting...' : 'Delete Habit'}
+          </button>
+        )}
       </form>
       
       {/* Modals */}
