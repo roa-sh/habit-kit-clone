@@ -1,50 +1,50 @@
 export default {
-  content: ['./index.html', './src/**/*.{js,jsx}'],
-  darkMode: 'class',
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
+  darkMode: "class",
   theme: {
     screens: {
-      xxs: '320px',
-      xs: '375px',
-      sm: '428px',
-      md: '768px',
-      lg: '1024px'
+      xxs: "320px",
+      xs: "375px",
+      sm: "428px",
+      md: "768px",
+      lg: "1024px",
     },
     extend: {
       colors: {
-        'ios-bg': '#000000',
-        'ios-card': '#1c1c1e',
-        'ios-card-secondary': '#2c2c2e',
-        'ios-border': '#3a3a3c',
-        'ios-border-light': '#48484a',
-        'ios-text-primary': '#ffffff',
-        'ios-text-secondary': '#98989f',
-        'ios-text-muted': '#636366',
-        'habit-purple': '#a855f7',
-        'habit-red': '#ef4444',
-        'habit-blue': '#3b82f6',
-        'habit-green': '#10b981',
-        'habit-yellow': '#f59e0b',
-        'habit-pink': '#ec4899',
-        'habit-indigo': '#6366f1',
-        'habit-teal': '#14b8a6',
-        'habit-orange': '#f97316',
-        'habit-gray': '#6b7280'
+        "ios-bg": "#000000",
+        "ios-card": "#1c1c1e",
+        "ios-card-secondary": "#2c2c2e",
+        "ios-border": "#3a3a3c",
+        "ios-border-light": "#48484a",
+        "ios-text-primary": "#ffffff",
+        "ios-text-secondary": "#98989f",
+        "ios-text-muted": "#636366",
+        "habit-purple": "#a855f7",
+        "habit-red": "#ef4444",
+        "habit-blue": "#3b82f6",
+        "habit-green": "#10b981",
+        "habit-yellow": "#f59e0b",
+        "habit-pink": "#ec4899",
+        "habit-indigo": "#6366f1",
+        "habit-teal": "#14b8a6",
+        "habit-orange": "#f97316",
+        "habit-gray": "#6b7280",
       },
       spacing: {
-        '18': '4.5rem',
-        '88': '22rem'
+        18: "4.5rem",
+        88: "22rem",
       },
       borderRadius: {
-        '4xl': '2rem'
+        "4xl": "2rem",
       },
       backdropBlur: {
-        xs: '2px',
-        sm: '4px',
-        md: '12px',
-        lg: '16px',
-        xl: '24px'
-      }
-    }
+        xs: "2px",
+        sm: "4px",
+        md: "12px",
+        lg: "16px",
+        xl: "24px",
+      },
+    },
   },
-  plugins: []
-}
+  plugins: [],
+};
