@@ -4,6 +4,12 @@ import { ApolloProvider } from '@apollo/client'
 import client from './graphql/client'
 import App from './App.jsx'
 import './index.css'
+import './debug.css'
+
+// Enable debug mode with ?debug=1
+if (new URLSearchParams(window.location.search).get('debug') === '1') {
+  document.documentElement.setAttribute('data-debug', 'true')
+}
 
 // Service worker will be automatically registered by vite-plugin-pwa
 

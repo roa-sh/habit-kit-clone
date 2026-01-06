@@ -1,0 +1,57 @@
+# Root-level gitignore for HabitKit Clone
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Thumbnails
+.Spotlight-V100
+.Trashes
+
+# Backend (Rails)
+backend/tmp/*
+backend/tmp/*/
+backend/log/*
+backend/storage/*
+backend/vendor/bundle
+backend/.bundle
+backend/db/*.sqlite3
+backend/db/*.sqlite3-*
+backend/coverage/
+backend/spec/tmp
+backend/public/system
+backend/public/uploads
+backend/.byebug_history
+backend/config/master.key
+backend/config/credentials/*.key
+
+# Frontend (React/Vite)
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+frontend/coverage/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+

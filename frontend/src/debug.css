@@ -1,0 +1,29 @@
+/* DEBUG MODE - Add ?debug=1 to URL to see element boundaries */
+[data-debug="true"] * {
+  outline: 1px solid rgba(255, 0, 0, 0.3) !important;
+}
+
+[data-debug="true"] *:hover {
+  outline: 2px solid rgba(255, 0, 0, 0.8) !important;
+  background: rgba(255, 0, 0, 0.1) !important;
+}
+
+/* Show element dimensions on hover */
+[data-debug="true"] *::before {
+  content: attr(class);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 8px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  padding: 2px 4px;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+}
+
+[data-debug="true"] *:hover::before {
+  opacity: 1;
+}
+
