@@ -76,9 +76,23 @@ END
 ALTER USER habitkit CREATEDB;
 EOF
 
-RAILS_ENV=production bundle exec rails db:create 2>/dev/null || true
-RAILS_ENV=production bundle exec rails db:migrate
-RAILS_ENV=production bundle exec rails db:seed 2>/dev/null || true
+# Verify .env.production exists and has content
+echo "Verifying .env.production file..."
+if [ ! -f .env.production ]; then
+  echo "ERROR: .env.production file not found!"
+  exit 1
+fi
+cat .env.production
+
+# Run Rails commands with explicit environment variables
+echo "Creating database..."
+RAILS_ENV=production DATABASE_PASSWORD=$DATABASE_PASSWORD SECRET_KEY_BASE=$SECRET_KEY_BASE bundle exec rails db:create 2>/dev/null || true
+
+echo "Running migrations..."
+RAILS_ENV=production DATABASE_PASSWORD=$DATABASE_PASSWORD SECRET_KEY_BASE=$SECRET_KEY_BASE bundle exec rails db:migrate
+
+echo "Seeding database..."
+RAILS_ENV=production DATABASE_PASSWORD=$DATABASE_PASSWORD SECRET_KEY_BASE=$SECRET_KEY_BASE bundle exec rails db:seed 2>/dev/null || true
 
 # Precompile assets (if any)
 # RAILS_ENV=production bundle exec rails assets:precompile 2>/dev/null || true
