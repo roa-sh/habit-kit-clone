@@ -32,17 +32,17 @@ echo ""
 echo "🔧 Deploying Backend..."
 cd "$BACKEND_DIR"
 
-# Create .env.production if it doesn't exist
-if [ ! -f .env.production ]; then
-    echo "🔐 Creating production environment file..."
-    cat > .env.production << EOF
+# Create .env if it doesn't exist (dotenv-rails loads .env automatically)
+if [ ! -f .env ]; then
+    echo "🔐 Creating environment file..."
+    cat > .env << EOF
 RAILS_ENV=production
 SECRET_KEY_BASE=$(openssl rand -hex 64)
 DATABASE_PASSWORD=habitkit_dev
 EOF
-    echo "✅ Created .env.production"
+    echo "✅ Created .env"
 else
-    echo "✅ .env.production already exists"
+    echo "✅ .env already exists"
 fi
 
 # Install dependencies
@@ -51,9 +51,9 @@ bundle install --without development test
 
 # Setup database
 echo "🗄️  Setting up database..."
-# Load environment variables from .env.production
-export $(grep -v '^#' .env.production | xargs)
-echo "Environment variables loaded from .env.production:"
+# Load environment variables from .env
+export $(grep -v '^#' .env | xargs)
+echo "Environment variables loaded from .env:"
 echo "RAILS_ENV: $RAILS_ENV"
 echo "SECRET_KEY_BASE: $SECRET_KEY_BASE"
 echo "DATABASE_PASSWORD: $DATABASE_PASSWORD"
@@ -76,19 +76,19 @@ END
 ALTER USER habitkit CREATEDB;
 EOF
 
-# Verify .env.production exists and has content
-echo "Verifying .env.production file..."
-if [ ! -f .env.production ]; then
-  echo "ERROR: .env.production file not found!"
+# Verify .env exists and has content
+echo "Verifying .env file..."
+if [ ! -f .env ]; then
+  echo "ERROR: .env file not found!"
   exit 1
 fi
-cat .env.production
+cat .env
 
 # Run all Rails database commands in a single context with environment loaded
 echo "Running database setup..."
 bash -c "
   # Load environment variables
-  export \$(grep -v '^#' .env.production | xargs)
+  export \$(grep -v '^#' .env | xargs)
   
   # Verify variables are loaded
   echo \"Loaded environment:\"
