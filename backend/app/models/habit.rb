@@ -175,4 +175,3 @@ class Habit < ApplicationRecord
     update_columns(current_streak: current_streak, longest_streak: longest_streak) if changed?
   end
 end
-

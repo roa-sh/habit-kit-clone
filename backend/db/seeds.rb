@@ -18,4 +18,3 @@ if Rails.env.development?
   
   puts "✅ Sample habit created (development only)"
 end
-

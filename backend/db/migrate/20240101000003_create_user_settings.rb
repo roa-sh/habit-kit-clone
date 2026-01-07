@@ -11,4 +11,3 @@ class CreateUserSettings < ActiveRecord::Migration[6.1]
                          name: "check_compact_days_range"
   end
 end
-

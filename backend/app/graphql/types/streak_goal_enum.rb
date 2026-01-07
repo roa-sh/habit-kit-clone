@@ -8,4 +8,3 @@ module Types
     value "MONTHLY", "Monthly streak goal", value: "monthly"
   end
 end
-

@@ -9,4 +9,3 @@ module Types
     field :longest_streak, Integer, null: false
   end
 end
-

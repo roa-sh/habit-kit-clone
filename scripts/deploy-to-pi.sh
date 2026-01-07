@@ -76,4 +76,3 @@ echo ""
 echo "🌐 Frontend: http://localhost/"
 echo "🔌 Backend: http://localhost:3001/graphql"
 echo ""
-

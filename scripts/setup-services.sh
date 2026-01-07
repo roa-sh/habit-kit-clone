@@ -103,4 +103,3 @@ echo "  View backend logs: sudo journalctl -u habitkit-backend -f"
 echo "  Restart backend:   sudo systemctl restart habitkit-backend"
 echo "  Restart nginx:     sudo systemctl restart nginx"
 echo ""
-
