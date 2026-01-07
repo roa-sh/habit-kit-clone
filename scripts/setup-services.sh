@@ -23,13 +23,11 @@ Requires=postgresql.service
 Type=simple
 User=$USER
 WorkingDirectory=$APP_DIR/backend
-EnvironmentFile=$APP_DIR/backend/.env
-Environment="RAILS_ENV=production"
-Environment="PORT=3001"
-Environment="PATH=/home/$USER/.rbenv/shims:/home/$USER/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-ExecStart=/bin/bash -lc 'cd /var/www/habitkit/habit-kit-clone/backend && bundle exec rails server -b 0.0.0.0 -p 3001 -e production'
+ExecStart=/bin/bash $APP_DIR/scripts/start-backend.sh
 Restart=always
 RestartSec=10
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

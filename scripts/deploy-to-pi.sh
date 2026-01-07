@@ -46,6 +46,9 @@ else
     echo "✅ .env already exists"
 fi
 
+# Make start script executable
+chmod +x "$PROJECT_DIR/scripts/start-backend.sh"
+
 # Install dependencies
 echo "📦 Installing Ruby dependencies..."
 bundle install --without development test
