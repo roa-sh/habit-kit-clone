@@ -77,3 +77,4 @@ echo "1. Clone your repository: cd /var/www/habitkit && git clone <your-repo>"
 echo "2. Run the deployment script: ./scripts/deploy-to-pi.sh"
 echo ""
 
+
