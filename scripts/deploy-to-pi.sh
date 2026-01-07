@@ -133,9 +133,11 @@ npm run build
 
 # Copy built files to nginx directory
 echo "📋 Copying files to web server..."
-sudo rm -rf /var/www/html/habitkit
-sudo mkdir -p /var/www/html/habitkit
-sudo cp -r dist/* /var/www/html/habitkit/
+sudo rm -rf /var/www/html/habit-kit-clone
+sudo mkdir -p /var/www/html/habit-kit-clone
+sudo cp -r dist/* /var/www/html/habit-kit-clone/
+sudo chown -R www-data:www-data /var/www/html/habit-kit-clone
+sudo chmod -R 755 /var/www/html/habit-kit-clone
 
 # Restart services
 echo ""

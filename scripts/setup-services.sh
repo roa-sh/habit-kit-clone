@@ -46,7 +46,7 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
     
-    root /var/www/html/habitkit;
+    root /var/www/html/habit-kit-clone;
     index index.html;
     
     server_name _;
