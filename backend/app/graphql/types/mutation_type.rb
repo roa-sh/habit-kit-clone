@@ -21,3 +21,4 @@ module Types
     field :update_user_settings, mutation: Mutations::UpdateUserSettings
   end
 end
+

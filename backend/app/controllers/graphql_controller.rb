@@ -65,3 +65,4 @@ class GraphqlController < ApplicationController
     }, status: 500
   end
 end
+

@@ -23,10 +23,11 @@ Requires=postgresql.service
 Type=simple
 User=$USER
 WorkingDirectory=$APP_DIR/backend
-EnvironmentFile=$APP_DIR/backend/.env.production
+EnvironmentFile=$APP_DIR/backend/.env
 Environment="RAILS_ENV=production"
 Environment="PORT=3001"
-ExecStart=/bin/bash -lc 'cd $APP_DIR/backend && bundle exec rails server -b 0.0.0.0 -p 3001 -e production'
+Environment="PATH=/home/$USER/.rbenv/shims:/home/$USER/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/bin/bash -lc 'cd /var/www/habitkit/habit-kit-clone/backend && bundle exec rails server -b 0.0.0.0 -p 3001 -e production'
 Restart=always
 RestartSec=10
 
@@ -53,7 +54,7 @@ server {
     
     # Backend API proxy
     location /graphql {
-        proxy_pass http://localhost:3001;
+        proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -64,7 +65,7 @@ server {
     }
     
     location /graphiql {
-        proxy_pass http://localhost:3001;
+        proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';

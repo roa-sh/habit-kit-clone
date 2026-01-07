@@ -17,3 +17,4 @@ class CreateHabits < ActiveRecord::Migration[6.1]
     add_index :habits, :updated_at
   end
 end
+

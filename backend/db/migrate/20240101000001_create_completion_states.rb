@@ -17,3 +17,4 @@ class CreateCompletionStates < ActiveRecord::Migration[6.1]
     SQL
   end
 end
+

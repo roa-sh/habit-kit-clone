@@ -45,3 +45,4 @@ export const useCalendar = (initialDate = new Date()) => {
     goToToday,
   };
 };
+

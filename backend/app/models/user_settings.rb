@@ -22,3 +22,4 @@ class UserSettings < ApplicationRecord
     self.show_habit_names = true if self.show_habit_names.nil?
   end
 end
+

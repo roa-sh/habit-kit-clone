@@ -5,3 +5,4 @@ module Types
     field_class Types::BaseField
   end
 end
+

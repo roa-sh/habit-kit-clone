@@ -15,5 +15,5 @@ production:
   <<: *default
   database: habitkit_production
   username: habitkit
-  password: <%= ENV.fetch("DATABASE_PASSWORD", "habitkit_dev") %>
-  host: <%= ENV.fetch("DATABASE_HOST", "127.0.0.1") %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD") %>
+  host: <%= ENV.fetch("DATABASE_HOST") %>

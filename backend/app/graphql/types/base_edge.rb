@@ -4,3 +4,4 @@ module Types
     include GraphQL::Types::Relay::EdgeBehaviors
   end
 end
+
