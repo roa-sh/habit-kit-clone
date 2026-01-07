@@ -53,6 +53,10 @@ bundle install --without development test
 echo "🗄️  Setting up database..."
 # Load environment variables from .env.production
 export $(grep -v '^#' .env.production | xargs)
+echo "Environment variables loaded from .env.production:"
+echo "RAILS_ENV: $RAILS_ENV"
+echo "SECRET_KEY_BASE: $SECRET_KEY_BASE"
+echo "DATABASE_PASSWORD: $DATABASE_PASSWORD"
 
 RAILS_ENV=production bundle exec rails db:create 2>/dev/null || true
 RAILS_ENV=production bundle exec rails db:migrate
