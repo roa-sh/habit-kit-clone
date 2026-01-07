@@ -84,15 +84,32 @@ if [ ! -f .env.production ]; then
 fi
 cat .env.production
 
-# Run Rails commands with explicit environment variables
-echo "Creating database..."
-RAILS_ENV=production DATABASE_PASSWORD=$DATABASE_PASSWORD SECRET_KEY_BASE=$SECRET_KEY_BASE bundle exec rails db:create 2>/dev/null || true
-
-echo "Running migrations..."
-RAILS_ENV=production DATABASE_PASSWORD=$DATABASE_PASSWORD SECRET_KEY_BASE=$SECRET_KEY_BASE bundle exec rails db:migrate
-
-echo "Seeding database..."
-RAILS_ENV=production DATABASE_PASSWORD=$DATABASE_PASSWORD SECRET_KEY_BASE=$SECRET_KEY_BASE bundle exec rails db:seed 2>/dev/null || true
+# Run all Rails database commands in a single context with environment loaded
+echo "Running database setup..."
+bash -c "
+  # Load environment variables
+  export \$(grep -v '^#' .env.production | xargs)
+  
+  # Verify variables are loaded
+  echo \"Loaded environment:\"
+  echo \"  RAILS_ENV=\$RAILS_ENV\"
+  echo \"  DATABASE_PASSWORD=\${DATABASE_PASSWORD:0:5}...\"
+  echo \"  SECRET_KEY_BASE=\${SECRET_KEY_BASE:0:10}...\"
+  
+  # Create database
+  echo 'Creating database...'
+  bundle exec rails db:create 2>/dev/null || true
+  
+  # Run migrations
+  echo 'Running migrations...'
+  bundle exec rails db:migrate
+  
+  # Seed database
+  echo 'Seeding database...'
+  bundle exec rails db:seed 2>/dev/null || true
+  
+  echo 'Database setup complete!'
+"
 
 # Precompile assets (if any)
 # RAILS_ENV=production bundle exec rails assets:precompile 2>/dev/null || true
