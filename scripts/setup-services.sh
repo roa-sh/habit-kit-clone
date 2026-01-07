@@ -41,43 +41,7 @@ EOF
 
 # Create nginx configuration
 echo "📝 Creating nginx configuration..."
-sudo tee /etc/nginx/sites-available/habitkit > /dev/null <<'EOF'
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    
-    root /var/www/html/habit-kit-clone;
-    index index.html;
-    
-    server_name _;
-    
-    # Frontend (React app)
-    location / {
-        try_files \$uri \$uri/ /index.html;
-    }
-    
-    # Backend API proxy
-    location /graphql {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_cache_bypass \$http_upgrade;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    }
-    
-    location /graphiql {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_cache_bypass \$http_upgrade;
-    }
-}
-EOF
+sudo cp $APP_DIR/config/nginx.conf /etc/nginx/sites-available/habitkit
 
 # Enable nginx site
 sudo ln -sf /etc/nginx/sites-available/habitkit /etc/nginx/sites-enabled/habitkit
