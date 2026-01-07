@@ -5,10 +5,16 @@
 set -e
 
 APP_DIR="/var/www/habitkit/habit-kit-clone"
-USER=$(whoami)
+# Get the actual user (not root) even when run with sudo
+if [ -n "$SUDO_USER" ]; then
+  USER="$SUDO_USER"
+else
+  USER=$(whoami)
+fi
 
 echo "⚙️  HabitKit - Setting up systemd services"
 echo "=========================================="
+echo "User for services: $USER"
 echo ""
 
 # Create backend service
