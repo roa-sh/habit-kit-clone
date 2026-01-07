@@ -2,9 +2,6 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: localhost
-  username: <%= ENV.fetch("POSTGRES_USER") { ENV['USER'] } %>
-  password: <%= ENV.fetch("POSTGRES_PASSWORD") { "" } %>
 
 development:
   <<: *default
@@ -18,5 +15,5 @@ production:
   <<: *default
   database: habitkit_production
   username: habitkit
-  password: <%= ENV['HABITKIT_DATABASE_PASSWORD'] %>
-
+  password: <%= ENV.fetch("DATABASE_PASSWORD", "habitkit_dev") %>
+  host: <%= ENV.fetch("DATABASE_HOST", "127.0.0.1") %>

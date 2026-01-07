@@ -39,6 +39,7 @@ if [ ! -f .env ]; then
 RAILS_ENV=production
 SECRET_KEY_BASE=$(openssl rand -hex 64)
 DATABASE_PASSWORD=habitkit_dev
+DATABASE_HOST=127.0.0.1
 EOF
     echo "✅ Created .env"
 else
