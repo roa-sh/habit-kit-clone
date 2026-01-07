@@ -2,15 +2,19 @@ import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 
 // Dynamically determine the GraphQL endpoint
 const getGraphQLEndpoint = () => {
-  const currentHost = window.location.hostname;
   const currentProtocol = window.location.protocol;
+  const currentHost = window.location.hostname;
+  const currentPort = window.location.port;
 
-  // For development: always use the hostname where frontend is accessed
-  // If accessing from Mac (localhost), backend is localhost:3001
-  // If accessing from Pi (192.168.40.39), backend is also on Mac at same IP:3001
-  const apiHost = currentHost;
+  // In production (deployed on Pi via nginx), use the proxy at /graphql
+  // This avoids CORS issues since it's same-origin
+  if (currentPort === '' || currentPort === '80' || currentPort === '443') {
+    // Production: use nginx proxy (same origin)
+    return `${currentProtocol}//${currentHost}/graphql`;
+  }
 
-  return `${currentProtocol}//${apiHost}:3001/graphql`;
+  // Development: connect directly to backend port 3001
+  return `${currentProtocol}//${currentHost}:3001/graphql`;
 };
 
 const httpLink = createHttpLink({
