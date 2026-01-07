@@ -58,6 +58,24 @@ echo "RAILS_ENV: $RAILS_ENV"
 echo "SECRET_KEY_BASE: $SECRET_KEY_BASE"
 echo "DATABASE_PASSWORD: $DATABASE_PASSWORD"
 
+# Setup PostgreSQL user and password
+echo "Setting up PostgreSQL user..."
+sudo -u postgres psql << EOF
+-- Create user if it doesn't exist
+DO \$\$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = 'habitkit') THEN
+    CREATE USER habitkit WITH PASSWORD '$DATABASE_PASSWORD';
+  ELSE
+    ALTER USER habitkit WITH PASSWORD '$DATABASE_PASSWORD';
+  END IF;
+END
+\$\$;
+
+-- Grant privileges
+ALTER USER habitkit CREATEDB;
+EOF
+
 RAILS_ENV=production bundle exec rails db:create 2>/dev/null || true
 RAILS_ENV=production bundle exec rails db:migrate
 RAILS_ENV=production bundle exec rails db:seed 2>/dev/null || true
