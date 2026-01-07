@@ -32,12 +32,30 @@ echo ""
 echo "🔧 Deploying Backend..."
 cd "$BACKEND_DIR"
 
+# Create .env.production if it doesn't exist
+if [ ! -f .env.production ]; then
+    echo "🔐 Creating production environment file..."
+    cat > .env.production << EOF
+RAILS_ENV=production
+SECRET_KEY_BASE=$(openssl rand -hex 64)
+DATABASE_PASSWORD=habitkit_dev
+EOF
+    echo "✅ Created .env.production"
+else
+    echo "✅ .env.production already exists"
+fi
+
 # Install dependencies
 echo "📦 Installing Ruby dependencies..."
 bundle install --without development test
 
 # Setup database
 echo "🗄️  Setting up database..."
+# Load environment variables from .env.production
+set -a
+source .env.production
+set +a
+
 RAILS_ENV=production bundle exec rails db:create 2>/dev/null || true
 RAILS_ENV=production bundle exec rails db:migrate
 RAILS_ENV=production bundle exec rails db:seed 2>/dev/null || true

@@ -23,9 +23,10 @@ Requires=postgresql.service
 Type=simple
 User=$USER
 WorkingDirectory=$APP_DIR/backend
+EnvironmentFile=$APP_DIR/backend/.env.production
 Environment="RAILS_ENV=production"
 Environment="PORT=3001"
-ExecStart=/usr/bin/env bash -lc 'bundle exec rails server -b 0.0.0.0 -p 3001 -e production'
+ExecStart=/bin/bash -lc 'cd $APP_DIR/backend && bundle exec rails server -b 0.0.0.0 -p 3001 -e production'
 Restart=always
 RestartSec=10
 

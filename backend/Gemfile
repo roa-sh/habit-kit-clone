@@ -6,6 +6,7 @@ gem 'pg', '~> 1.4'
 gem 'puma', '~> 5.0'
 gem 'rack-cors'
 gem 'bootsnap', require: false
+gem 'dotenv-rails', groups: [:development, :production]
 
 # GraphQL
 gem 'graphql', '~> 2.0'
