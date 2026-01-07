@@ -47,5 +47,9 @@ echo "Bundle path: $(which bundle)"
 echo "Bundle version: $(bundle --version)"
 
 # Start Rails server
+echo ""
+echo "=== Starting Rails Server ==="
+echo "Command: bundle exec rails server -b 0.0.0.0 -p 3001 -e production"
+echo ""
 exec bundle exec rails server -b 0.0.0.0 -p 3001 -e production
 
