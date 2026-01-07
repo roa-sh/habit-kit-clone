@@ -47,7 +47,7 @@ else
 fi
 
 # Make start script executable
-chmod +x "$PROJECT_DIR/scripts/start-backend.sh"
+chmod +x "$APP_DIR/scripts/start-backend.sh"
 
 # Install dependencies
 echo "📦 Installing Ruby dependencies..."
