@@ -1,10 +1,10 @@
 #!/bin/bash
 # HabitKit - Deployment Script for Raspberry Pi
-# Deploys the application to /var/www/habitkit
+# Deploys the application to /var/www/habit-kit-clone
 
 set -e  # Exit on any error
 
-APP_DIR="/var/www/habitkit/habit-kit-clone"
+APP_DIR="/var/www/habit-kit-clone"
 BACKEND_DIR="$APP_DIR/backend"
 FRONTEND_DIR="$APP_DIR/frontend"
 
@@ -16,7 +16,7 @@ echo ""
 if [ ! -d "$APP_DIR" ]; then
     echo "❌ Error: Application directory not found at $APP_DIR"
     echo "Please clone your repository first:"
-    echo "  cd /var/www/habitkit"
+    echo "  cd /var/www"
     echo "  git clone <your-repo-url> habit-kit-clone"
     exit 1
 fi

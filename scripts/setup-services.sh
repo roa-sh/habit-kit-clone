@@ -4,7 +4,7 @@
 
 set -e
 
-APP_DIR="/var/www/habitkit/habit-kit-clone"
+APP_DIR="/var/www/habit-kit-clone"
 # Get the actual user (not root) even when run with sudo
 if [ -n "$SUDO_USER" ]; then
   USER="$SUDO_USER"

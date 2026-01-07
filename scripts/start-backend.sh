@@ -21,7 +21,7 @@ else
 fi
 
 # Change to backend directory
-cd /var/www/habitkit/habit-kit-clone/backend
+cd /var/www/habit-kit-clone/backend
 
 # Load environment variables from .env
 echo ""
