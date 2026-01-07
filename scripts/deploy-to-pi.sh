@@ -52,9 +52,7 @@ bundle install --without development test
 # Setup database
 echo "🗄️  Setting up database..."
 # Load environment variables from .env.production
-set -a
-source .env.production
-set +a
+export $(grep -v '^#' .env.production | xargs)
 
 RAILS_ENV=production bundle exec rails db:create 2>/dev/null || true
 RAILS_ENV=production bundle exec rails db:migrate
