@@ -93,25 +93,25 @@ echo "Running database setup..."
 bash -c "
   # Load environment variables
   export \$(grep -v '^#' .env | xargs)
-  
+
   # Verify variables are loaded
   echo \"Loaded environment:\"
   echo \"  RAILS_ENV=\$RAILS_ENV\"
   echo \"  DATABASE_PASSWORD=\${DATABASE_PASSWORD:0:5}...\"
   echo \"  SECRET_KEY_BASE=\${SECRET_KEY_BASE:0:10}...\"
-  
+
   # Create database
   echo 'Creating database...'
   bundle exec rails db:create 2>/dev/null || true
-  
+
   # Run migrations
   echo 'Running migrations...'
   bundle exec rails db:migrate
-  
+
   # Seed database
   echo 'Seeding database...'
   bundle exec rails db:seed 2>/dev/null || true
-  
+
   echo 'Database setup complete!'
 "
 

@@ -76,5 +76,3 @@ echo "📋 Next steps:"
 echo "1. Clone your repository: cd /var/www && git clone <your-repo> habit-kit-clone"
 echo "2. Run the deployment script: cd /var/www/habit-kit-clone && ./scripts/deploy-to-pi.sh"
 echo ""
-
-

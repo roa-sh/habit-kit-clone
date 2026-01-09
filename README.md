@@ -70,6 +70,18 @@ npm run dev
 - **Backend GraphQL**: http://localhost:3001/graphql
 - **GraphiQL IDE**: http://localhost:3001/graphiql (development only)
 
+## 🚢 Deployment to Raspberry Pi
+
+**Quick Setup (Cron Job - Recommended):**
+```bash
+crontab -e
+# Add: * * * * * cd /var/www/habit-kit-clone && git pull origin main && ./scripts/deploy-to-pi.sh >> /tmp/deploy.log 2>&1
+```
+
+Auto-deploys every minute. Alternative: Self-hosted GitHub Runner for instant deploys.
+
+See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for full setup instructions.
+
 ## 🔑 Key Features Implemented
 
 ### Backend
@@ -205,6 +217,3 @@ npm install
 ## 📄 License
 
 This is a learning project based on the HabitKit app design.
-
-
-

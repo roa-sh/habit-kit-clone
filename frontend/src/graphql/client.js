@@ -8,7 +8,7 @@ const getGraphQLEndpoint = () => {
 
   // In production (deployed on Pi via nginx), use the proxy at /graphql
   // This avoids CORS issues since it's same-origin
-  if (currentPort === '' || currentPort === '80' || currentPort === '443') {
+  if (currentPort === "" || currentPort === "80" || currentPort === "443") {
     // Production: use nginx proxy (same origin)
     return `${currentProtocol}//${currentHost}/graphql`;
   }

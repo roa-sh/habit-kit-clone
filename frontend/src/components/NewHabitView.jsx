@@ -19,20 +19,20 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
     color: initialData?.color || '#a855f7',
     streakGoal: initialData?.streakGoal || 'NONE'
   })
-  
+
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!formData.name.trim()) {
       alert('Please enter a habit name')
       return
     }
-    
+
     setIsSaving(true)
     try {
       if (isEditing && initialData) {
@@ -47,12 +47,12 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
       setIsSaving(false)
     }
   }
-  
+
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this habit? This action cannot be undone.')) {
       return
     }
-    
+
     setIsDeleting(true)
     try {
       if (onDelete && initialData) {
@@ -65,7 +65,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
       setIsDeleting(false)
     }
   }
-  
+
   return (
     <motion.div
       initial={{ x: '100%' }}
@@ -90,7 +90,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
           <div className="w-11" />
         </div>
       </div>
-      
+
       {/* Form */}
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
         {/* Emoji Selector */}
@@ -107,7 +107,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
             Tap to change icon
           </p>
         </div>
-        
+
         {/* Name Input */}
         <div>
           <label className="block text-sm font-semibold text-ios-text-primary mb-3">
@@ -122,7 +122,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
             autoFocus
           />
         </div>
-        
+
         {/* Description Input */}
         <div>
           <label className="block text-sm font-semibold text-ios-text-primary mb-3">
@@ -136,7 +136,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
             className="w-full px-5 py-4 bg-ios-card border-2 border-ios-border rounded-2xl text-ios-text-primary text-base placeholder-ios-text-muted focus:border-habit-purple transition-colors resize-none"
           />
         </div>
-        
+
         {/* Color Picker */}
         <div>
           <label className="block text-sm font-semibold text-ios-text-primary mb-3">
@@ -157,7 +157,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
             </div>
           </button>
         </div>
-        
+
         {/* Streak Goal */}
         <div>
           <label className="block text-sm font-semibold text-ios-text-primary mb-3">
@@ -183,7 +183,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
             ))}
           </div>
         </div>
-        
+
         {/* Save Button */}
         <button
           type="submit"
@@ -193,7 +193,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
         >
           {isSaving ? 'Saving...' : (isEditing ? 'Save Changes' : 'Create Habit')}
         </button>
-        
+
         {/* Delete Button (only when editing) */}
         {isEditing && onDelete && (
           <button
@@ -207,7 +207,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
           </button>
         )}
       </form>
-      
+
       {/* Modals */}
       {showEmojiPicker && (
         <EmojiPicker
@@ -219,7 +219,7 @@ const NewHabitView = ({ onClose, onSave, onDelete, initialData = null, isEditing
           onClose={() => setShowEmojiPicker(false)}
         />
       )}
-      
+
       {showColorPicker && (
         <ColorPicker
           currentColor={formData.color}
