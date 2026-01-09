@@ -5,4 +5,3 @@ class HabitkitCloneSchema < GraphQL::Schema
   # Use batch loading to avoid N+1 queries
   use GraphQL::Batch
 end
-

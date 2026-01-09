@@ -9,4 +9,3 @@ module Types
     value "FAILED", "Habit was attempted but failed", value: "failed"
   end
 end
-

@@ -33,4 +33,3 @@ export const getShortMonth = (date) => {
 export const getTodayString = () => {
   return format(new Date(), "yyyy-MM-dd");
 };
-
