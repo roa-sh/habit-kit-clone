@@ -4,6 +4,16 @@
 
 set -e  # Exit on any error
 
+# Initialize rbenv and node (needed for cron jobs)
+export HOME=$(eval echo ~${SUDO_USER:-$USER})
+export RBENV_ROOT="$HOME/.rbenv"
+export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:/usr/local/bin:/usr/bin:/bin:$PATH"
+eval "$(rbenv init - bash)" 2>/dev/null || true
+
+# Add node/npm to PATH if installed
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" 2>/dev/null || true
+
 APP_DIR="/var/www/habit-kit-clone"
 BACKEND_DIR="$APP_DIR/backend"
 FRONTEND_DIR="$APP_DIR/frontend"
