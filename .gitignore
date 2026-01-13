@@ -12,9 +12,8 @@ Icon
 .Trashes
 
 # Backend (Rails)
-backend/tmp/*
-backend/tmp/*/
-backend/log/*
+backend/tmp/
+backend/log/
 backend/storage/*
 backend/vendor/bundle
 backend/.bundle
@@ -34,6 +33,9 @@ frontend/dist/
 frontend/dist-ssr/
 frontend/.vite/
 frontend/coverage/
+
+# Scripts
+scripts/systemd/
 
 # IDE
 .idea/
