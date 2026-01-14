@@ -27,10 +27,17 @@ rails db:migrate
 - Go to Settings → System → Developer options
 
 #### 2. Enable Wireless Debugging
-- Turn on **USB debugging**
-- Turn on **Wireless debugging** (Android 11+)
 
-For Android 10 and below: You'll need to temporarily connect via USB to any computer with ADB, run `adb tcpip 5555`, then disconnect.
+**For Android 11+ (Most Common):**
+
+1. Turn on **USB debugging**
+2. Turn on **Wireless debugging**
+3. **IMPORTANT:** Tap **"Pair device with pairing code"**
+4. Note the **6-digit code** and the **IP:PORT** shown (e.g., `192.168.40.150:37853`)
+
+**For Android 10 and below:**
+
+You'll need to temporarily connect via USB to any computer with ADB, run `adb tcpip 5555`, then disconnect.
 
 #### 3. Choose Connection Method
 
@@ -53,6 +60,44 @@ ANDROID_DEVICE_NAME="android"
 BACKEND_URL="http://localhost:3000/api/usage"
 DAYS_BACK=1  # Use 1 for minute-by-minute syncing (only today's data)
 ```
+
+## Pair Device (Android 11+ Only - Do This Once)
+
+Android 11+ uses TWO different ports: one for pairing, one for connecting.
+
+**Step 1: Pair (one-time)**
+
+On tablet: Settings → Developer options → Wireless debugging → **Pair device with pairing code**
+- Note **6-digit code** and **pairing port** (e.g., `192.168.40.150:43003`)
+
+On Pi:
+```bash
+adb pair 192.168.40.150:43003  # Use pairing port from tablet
+# Enter 6-digit code when prompted
+```
+
+**Step 2: Connect (every time)**
+
+On tablet: Look at main **Wireless debugging** screen (not pairing dialog)
+- Note **connection port** (e.g., `192.168.40.150:43243`) - this is different!
+
+On Pi:
+```bash
+adb connect 192.168.40.150:43243  # Use connection port from tablet
+adb devices  # Should show: device (not offline)
+```
+
+**Step 3: Update config**
+```bash
+sudo nano /etc/android-sync.conf
+```
+Add your connection port:
+```bash
+ANDROID_STATIC_IP="192.168.40.150"
+ANDROID_ADB_PORT="43243"  # Your connection port
+```
+
+**Note:** Connection port may change after tablet restart. Check Wireless debugging screen if sync stops working.
 
 ## Test
 

@@ -9,6 +9,7 @@ set -e
 BACKEND_URL="${BACKEND_URL:-http://localhost:3000/api/usage}"
 TABLET_NAME="${ANDROID_DEVICE_NAME:-android}"
 STATIC_IP="${ANDROID_STATIC_IP:-}"
+ADB_PORT="${ANDROID_ADB_PORT:-5555}"  # Default to 5555, but can be overridden
 LOG_FILE="/tmp/android-sync.log"
 DAYS_BACK="${DAYS_BACK:-1}"  # Only sync today's data for frequent updates
 
@@ -42,10 +43,10 @@ check_adb() {
 # Method 1: Try static IP if configured
 try_static_ip() {
     if [ -n "$STATIC_IP" ]; then
-        log "Attempting connection to static IP: $STATIC_IP"
-        adb connect "$STATIC_IP:5555" 2>&1 | tee -a "$LOG_FILE"
+        log "Attempting connection to static IP: $STATIC_IP:$ADB_PORT"
+        adb connect "$STATIC_IP:$ADB_PORT" 2>&1 | tee -a "$LOG_FILE"
         sleep 2
-        if adb devices | grep -q "$STATIC_IP:5555"; then
+        if adb devices | grep -q "$STATIC_IP:$ADB_PORT"; then
             log "✓ Connected via static IP"
             return 0
         fi
@@ -106,15 +107,15 @@ scan_network() {
     return 1
 }
 
-# Method 4: Check if USB connected
-try_usb() {
-    log "Checking for USB connection..."
+# Method 4: Check if already connected
+check_existing_connection() {
+    log "Checking for existing ADB connection..."
 
-    # Check for USB devices
-    USB_DEVICES=$(adb devices | grep -v "List" | grep -v "5555" | awk '{print $1}')
+    # Check if any device is already connected (not offline)
+    CONNECTED=$(adb devices | grep -v "List" | grep "device$" | awk '{print $1}')
 
-    if [ -n "$USB_DEVICES" ]; then
-        log "✓ Found USB connected device"
+    if [ -n "$CONNECTED" ]; then
+        log "✓ Found existing connection: $CONNECTED"
         return 0
     fi
 
@@ -130,8 +131,8 @@ connect_device() {
     adb start-server 2>&1 | tee -a "$LOG_FILE"
 
     # Try each method in order
+    check_existing_connection && return 0
     try_static_ip && return 0
-    try_usb && return 0
     try_mdns && return 0
     scan_network && return 0
 
