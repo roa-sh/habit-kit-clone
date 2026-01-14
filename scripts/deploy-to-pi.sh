@@ -67,10 +67,6 @@ bundle install --without development test
 echo "🗄️  Setting up database..."
 # Load environment variables from .env
 export $(grep -v '^#' .env | xargs)
-echo "Environment variables loaded from .env:"
-echo "RAILS_ENV: $RAILS_ENV"
-echo "SECRET_KEY_BASE: $SECRET_KEY_BASE"
-echo "DATABASE_PASSWORD: $DATABASE_PASSWORD"
 
 # Setup PostgreSQL user and password
 echo "Setting up PostgreSQL user..."
@@ -90,25 +86,17 @@ END
 ALTER USER habitkit CREATEDB;
 EOF
 
-# Verify .env exists and has content
-echo "Verifying .env file..."
+# Verify .env exists
 if [ ! -f .env ]; then
-  echo "ERROR: .env file not found!"
+  echo "❌ ERROR: .env file not found!"
   exit 1
 fi
-cat .env
 
 # Run all Rails database commands in a single context with environment loaded
 echo "Running database setup..."
 bash -c "
   # Load environment variables
   export \$(grep -v '^#' .env | xargs)
-
-  # Verify variables are loaded
-  echo \"Loaded environment:\"
-  echo \"  RAILS_ENV=\$RAILS_ENV\"
-  echo \"  DATABASE_PASSWORD=\${DATABASE_PASSWORD:0:5}...\"
-  echo \"  SECRET_KEY_BASE=\${SECRET_KEY_BASE:0:10}...\"
 
   # Create database
   echo 'Creating database...'
